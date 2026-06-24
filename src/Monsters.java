@@ -11,10 +11,17 @@ public class Monsters implements Serializable{
     int statusDuration = 0;
 
     public Monsters(String name, Element element, Rarity rarity, int hp, int att, int def, int spd) {
-        this.name = name; this.element = element; this.rarity = rarity;
-        this.level = 1; this.maxHp = hp; this.hp = hp;
-        this.attack = att; this.defense = def; this.speed = spd;
-        this.exp = 0; this.maxExp = 100;
+        this.name = name; 
+        this.element = element; 
+        this.rarity = rarity;
+        this.level = 1; 
+        this.maxHp = hp; 
+        this.hp = hp;
+        this.attack = att; 
+        this.defense = def; 
+        this.speed = spd;
+        this.exp = 0; 
+        this.maxExp = 100;
         initDefaultSkills();
     }
     

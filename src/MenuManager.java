@@ -33,9 +33,10 @@ public class MenuManager {
                             "3. Fast Travel Map", 
                             "4. Koleksi Monster Anda", 
                             "5. Gacha (1x Pull) [-50 Gold]", 
-                            "6. Gacha (10x Pull) [-500 Gold]", 
-                            "7. Save Game", 
-                            "8. Load Game"};
+                            "6. Gacha (10x Pull) [-500 Gold]",
+                            "7. Shop", 
+                            "8. Save Game", 
+                            "9. Load Game"};
             for(int i=0; i<items.length; i++) {
                 g2.drawString((selectIdx == i ? " > " : "   ") + items[i], 260, 160 + (i * 35));
             }
@@ -64,6 +65,22 @@ public class MenuManager {
                 g2.drawString((selectIdx == i ? " > " : "   ") + m.name + " Lv." + m.level + " (" + m.element + ") HP:" + m.hp + "/" + m.maxHp, 100, drawY);
                 drawY += 40;
             }
+        } else if (sectionIndex == 4){
+            g2.drawString("=== ITEM SHOP ADVENTURER ===", 240, 80);
+            g2.setColor(Color.YELLOW);
+            g2.drawString("Gold Kamu : " + gp.gold + " Gold", 300, 110);
+            g2.setColor(Color.WHITE);
+
+            String[] shopItems = {
+                "1. Potion (+50 HP)         [-20 Gold]",
+                "2. Super Potion (+150 HP)  [-50 Gold]",
+                "3. Revive                  [-100 Gold]",
+                "4. Keluar dari Shop"
+            };
+
+            for(int i = 0; i < shopItems.length; i++){
+                g2.drawString((selectIdx == i ? " > " : "   ") + shopItems[i], 200, 180 + (i * 40));
+            }
         }
     }
 
@@ -71,10 +88,11 @@ public class MenuManager {
         int code = e.getKeyCode();
         if(code == KeyEvent.VK_ESCAPE) { sectionIndex = 0; selectIdx = 0; gp.currentState = GameState.World; return; }
 
-        int limit = 8;
+        int limit = 9;
         if(sectionIndex == 1) limit = gp.inventory.size();
         if(sectionIndex == 2) limit = gp.waypoints.size();
         if(sectionIndex == 3) limit = gp.team.size();
+        if(sectionIndex == 4) limit = 4;
 
         if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) selectIdx = (selectIdx - 1 + limit) % limit;
         if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) selectIdx = (selectIdx + 1) % limit;
@@ -87,9 +105,15 @@ public class MenuManager {
                 else if(selectIdx == 3) { sectionIndex = 3; selectIdx = 0; }
                 else if(selectIdx == 4) gp.gachaEngine.doPull(1);
                 else if(selectIdx == 5) gp.gachaEngine.doPull(10);
-                else if(selectIdx == 6) saveGame();
-                else if(selectIdx == 7) loadGame();
-            } else if(sectionIndex == 2) { // Logic Teleport
+                else if(selectIdx == 6) { sectionIndex = 4; selectIdx = 0;}
+                else if(selectIdx == 7) saveGame();
+                else if(selectIdx == 8) loadGame();
+            } else if (sectionIndex == 4){
+                if (selectIdx == 0) beliItem("Potion", "POTION", 20);
+                else if (selectIdx == 1) beliItem("Super Potion", "SUPERPOTION", 50);
+                else if (selectIdx == 2) beliItem("Revive", "REVIVE", 100);
+                else if (selectIdx == 3) {sectionIndex = 0; selectIdx = 0;}
+            }else if(sectionIndex == 2) { // Logic Teleport
                 Waypoints wp = gp.waypoints.get(selectIdx);
                 if(wp.discovered) {
                     gp.playerX = wp.x * Game.tileSize;
@@ -124,5 +148,22 @@ public class MenuManager {
             JOptionPane.showMessageDialog(gp, "Game Berhasil Di-Load!");
             gp.currentState = GameState.World;
         } catch(Exception e) { e.printStackTrace(); }
+    }
+
+    private void beliItem(String nama, String type, int price){
+        if (gp.gold < price){
+            JOptionPane.showMessageDialog(gp, "Gold kamu tidak cukup untuk membeli " + nama);
+            return;
+        }
+        gp.gold -= price;
+        boolean ditemukan = false;
+        for(Items i : gp.inventory){
+            if (i.type.equals(type)){
+                i.qty++;
+                ditemukan = true;
+                break;
+            }
+        }
+        JOptionPane.showMessageDialog(gp, "Berhasil membeli 1x " + nama + "!");
     }
 }

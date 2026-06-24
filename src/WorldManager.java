@@ -194,7 +194,8 @@ public class WorldManager {
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         int drawSize = 48; 
         int screenX = Game.screenWidth / 2;
-        int screenY = Game.screenHeight / 2;
+        int selisihTinggi = drawSize - Game.tileSize;
+        int screenY = (Game.screenHeight / 2) - selisihTinggi;
 
         if (flipX) {
             // Menggambar terbalik (Kanan jadi Kiri) jika player berjalan ke kiri

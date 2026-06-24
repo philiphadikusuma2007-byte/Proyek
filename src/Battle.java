@@ -8,6 +8,9 @@ public class Battle {
     GamePanel gp;
     Monsters playerActive, enemy;
     ArrayList<String> logs = new ArrayList<>();
+    boolean selesai = false;
+    int earnedGold = 0;
+    int earnedXP = 0;
     int menuIndex = 0, subMenu = 0; // 0: Main, 1: Skill, 2: Item
     boolean isPlayerTurn = true;
 
@@ -82,6 +85,36 @@ public class Battle {
                 Items it = gp.inventory.get(i);
                 g2.drawString((menuIndex == i ? "> " : "  ") + it.name + " x" + it.qty, 540, 455 + (i * 22));
             }
+        }
+        // ---- POP-UP RINGKASAN SETELAH BATTLE SELESAI ----
+        if (selesai) {
+            // Gambar kotak background semi-transparan di tengah layar
+            g2.setColor(new Color(0, 0, 0, 220));
+            g2.fillRect(150, 100, 500, 350);
+            g2.setColor(Color.YELLOW);
+            g2.drawRect(150, 100, 500, 350);
+
+            g2.setFont(new Font("SansSerif", Font.BOLD, 26));
+            if (enemy.hp <= 0) {
+                g2.drawString("⚔️ VICTORY ⚔️", 310, 150);
+                
+                g2.setFont(new Font("Monospaced", Font.BOLD, 18));
+                g2.setColor(Color.WHITE);
+                g2.drawString("Monster dikalahkan: " + enemy.name, 180, 210);
+                g2.drawString("⭐ EXP Didapat      : +" + earnedXP + " EXP", 180, 250);
+                g2.drawString("💰 Gold Diperoleh  : +" + earnedGold + " Gold", 180, 290);
+                g2.drawString("📈 Status " + playerActive.name + "   : Lv." + playerActive.level + " (HP: " + playerActive.hp + "/" + playerActive.maxHp + ")", 180, 330);
+            } else {
+                g2.setColor(Color.RED);
+                g2.drawString("💀 DEFEAT 💀", 320, 150);
+                g2.setFont(new Font("Monospaced", Font.BOLD, 18));
+                g2.setColor(Color.WHITE);
+                g2.drawString("Semua monster aktifmu pingsan!", 210, 240);
+            }
+
+            g2.setFont(new Font("SansSerif", Font.ITALIC, 14));
+            g2.setColor(Color.GRAY);
+            g2.drawString("[ Tekan ENTER / SPASI untuk kembali ke Map ]", 250, 410);
         }
     }
 
@@ -172,6 +205,11 @@ public class Battle {
 
     private void checkBattleStatus() {
         if(enemy.hp <= 0) {
+            selesai = true;
+            earnedXP = 50 + (enemy.level * 10);
+            earnedGold = 30 + new Random().nextInt(41) + (enemy.level * 5);
+            playerActive.gainExp(earnedXP, logs);
+            gp.gold += earnedGold;
             logs.add("🏆 Musuh " + enemy.name + " Kalah!");
             playerActive.gainExp(50 + (enemy.level * 10), logs);
             Random r = new Random();
@@ -181,6 +219,9 @@ public class Battle {
             
             endBattleLater();
         } else if(playerActive.hp <= 0) {
+            selesai = true;
+            earnedGold = 0;
+            earnedXP = 0;
             logs.add("💀 " + playerActive.name + " pingsan!");
             endBattleLater();
         }

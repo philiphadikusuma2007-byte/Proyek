@@ -17,7 +17,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     
     // Player Data
     public int gold = 100;
-    public int playerX = 50 * 32, playerY = 26 * 32;
+    public int playerX = 51 * 32, playerY = 26 * 32;
     public int playerDirection = 0;
     public boolean isMoving = false;
     public ArrayList<Monsters> team = new ArrayList<>();
