@@ -1,118 +1,108 @@
-
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import javax.imageio.ImageIO;
+import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import javax.swing.JPanel;
+import java.awt.event.*;
+import java.awt.*;
 
-public class GamePanel extends JPanel implements Runnable{
-    private BufferedImage tileImage;
-    private int playerX = 0;
-    private int playerY = 0;
-    private final int TILE_SIZE = 64;
-    private final int NUM_TILES = 60;
-    private BufferedImage[] tileAssets = new BufferedImage[NUM_TILES];
-    private String[] tileNames = {
-        "grass", "tall_grass", "grass", "sand_light", "water", "water_edge", "rock", "water", "stump", "sign",
-        "tree", "pine_tree", "small_tree", "bush", "flower_red", "flower", "log", "signboard", "mailbox", "rock",
-        "fence", "gate", "wood_fence", "wood_fence_corner", "signboard", "rock_small", "rock_large", "rock_medium", "stepping_stone", "ladder",
-        "house_red", "house_blue", "pokecenter", "pokecenter_alt", "shop", "house_green", "house_purple", "gym", "gate", "statue",
-        "wood_bridge", "fence", "stone_bridge", "boulder", "gate", "cave_entrance", "rock", "mountain_large", "mountain_small", "rock_small",
-        "flower_patch_pink", "flower_patch_orange", "flower_patch_blue", "flower_patch_yellow", "statue", "statue_2", "sandy_ground", "snow", "dark_cave_floor", "whirlpool"
-    };
+public class GamePanel extends JPanel implements Runnable, KeyListener {
+    private Thread gameThread;
+    private boolean running = false;
 
-    private final int max_map_col = 60;
-    private final int max_map_row = 40;
-
-    private int[][] worldMap = new int[max_map_row][max_map_col];
-
-    public void loadmap(String filepath){
-        try {
-            InputStream a = getClass().getResourceAsStream(filepath);
-            BufferedReader br = new BufferedReader(new InputStreamReader(a));
-
-            for (int row = 0; row < max_map_row; row++) {
-                String line = br.readLine();
-
-                String[] angka = line.split("\\s+");
-
-                for (int col = 0; col < max_map_col; col++) {
-                    worldMap[row][col] = Integer.parseInt(angka[col]);
-                }
-            }
-            br.close();
-        } catch (Exception e) {
-            System.out.println("Error Load file map");
-            e.printStackTrace();
-        }
+    //state
+    public GameState currentState = GameState.World;
+    public WorldManager worldManager;
+    public Battle battleEngine;
+    public Gacha gachaEngine;
+    public MenuManager menuManager;
+    
+    // Player Data
+    public int gold = 100;
+    public int playerX = 50 * 32, playerY = 26 * 32;
+    public int playerDirection = 0;
+    public boolean isMoving = false;
+    public ArrayList<Monsters> team = new ArrayList<>();
+    public ArrayList<Items> inventory = new ArrayList<>();
+    public ArrayList<Waypoints> waypoints = new ArrayList<>();
+    
+    public GamePanel() {
+        setPreferredSize(new Dimension(Game.screenWidth, Game.screenHeight));
+        setBackground(Color.BLACK);
+        setFocusable(true);
+        addKeyListener(this);
+        initGameData();
     }
+    
+    private void initGameData() {
+        worldManager = new WorldManager(this);
+        battleEngine = new Battle(this);
+        gachaEngine = new Gacha(this);
+        menuManager = new MenuManager(this);
 
-    public GamePanel(){
-        loadTileAssets();
+        // Berikan starter monster
+        team.add(AssetGenerator.allMonsters.get(0).cloneMonster());
+        
+        // Item bawaan
+        inventory.add(new Items("Potion", "POTION", 5));
+        inventory.add(new Items("Super Potion", "SUPER_POTION", 2));
+        inventory.add(new Items("Revive", "REVIVE", 1));
 
-        loadmap("/assets/Map/Tiles/map.txt");
-
-        Thread gameThread = new Thread(this);
+        // Waypoints resmi map
+        waypoints.add(new Waypoints("Hutan", 30, 19));
+        waypoints.add(new Waypoints("Danau", 10, 25));
+        waypoints.add(new Waypoints("Desa", 54, 30));
+    }
+    
+    public void startGame() {
+        running = true;
+        gameThread = new Thread(this);
         gameThread.start();
     }
+    
+    @Override
+    public void run() {
+        double drawInterval = 1000000000 / 60.0; // 60 FPS
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
+
+        while(running) {
+            currentTime = System.nanoTime();
+            delta += (currentTime - lastTime) / drawInterval;
+            lastTime = currentTime;
+
+            if(delta >= 1) {
+                update();
+                repaint();
+                delta--;
+            }
+        }
+    }
+
+    private void update() {
+        if (currentState == GameState.World) worldManager.update();
+        else if (currentState == GameState.Battle) battleEngine.update();
+    }
 
     @Override
-    protected void paintComponent(Graphics g){
+    protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D g2= (Graphics2D)g ;
-
-        for (int row = 0; row < worldMap.length; row++) {
-            for (int col = 0; col < worldMap[0].length; col++) {
-                int tileType = worldMap[row][col];
-                if (tileType >= 0 && tileType < NUM_TILES) {
-                    BufferedImage image = tileAssets[tileType];
-                    if (image != null) {
-                        int xPos=(col*TILE_SIZE)-playerX;
-                        int yPos=(row*TILE_SIZE)-playerY;
-                        g2.drawImage(image, xPos, yPos,TILE_SIZE,TILE_SIZE,null);
-                    }
-                }
-            }
-        }
-        g2.setColor(Color.red);
-        g2.fillRect(300, 300, 32, 32);
+        Graphics2D g2 = (Graphics2D) g;
+        
+        if (currentState == GameState.World) worldManager.draw(g2);
+        else if (currentState == GameState.Battle) battleEngine.draw(g2);
+        else if (currentState == GameState.Gacha) gachaEngine.draw(g2);
+        else if (currentState == GameState.Menu) menuManager.draw(g2);
+        
+        g2.dispose();
     }
 
-    @Override
-    public void run(){
-        while (true) { 
-            // playerX+=1;
-            repaint();
-            try {
-                Thread.sleep(16);
-            } catch (InterruptedException e) {
-            }
-        }
+    // Key Listener delegation
+    @Override public void keyPressed(KeyEvent e) {
+        if(currentState == GameState.World) worldManager.keyPressed(e);
+        else if(currentState == GameState.Battle) battleEngine.keyPressed(e);
+        else if(currentState == GameState.Gacha) gachaEngine.keyPressed(e);
+        else if(currentState == GameState.Menu) menuManager.keyPressed(e);
     }
-    private void loadTileAssets(){
-        try {
-            for (int i = 0; i < NUM_TILES; i++) {
-                String path = "/assets/Map/Tiles/" + tileNames[i] + ".png";
-                InputStream is = getClass().getResourceAsStream(path);
-                if (is != null) {
-                    tileAssets[i] = ImageIO.read(is);
-                } else {
-                    path = "/assets/Map/Tiles/" + tileNames[i] + ".png";
-                    is = getClass().getResourceAsStream(path);
-                    if (is != null) {
-                        tileAssets[i] = ImageIO.read(is);
-                    } else {
-                        System.out.println("Warning: Could not find tile asset: " + tileNames[i]);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("Error loading Assets");
-            e.printStackTrace();
-        }
-    }
+    @Override public void keyReleased(KeyEvent e) { if(currentState == GameState.World) worldManager.keyReleased(e); }
+    @Override public void keyTyped(KeyEvent e) {}
 }

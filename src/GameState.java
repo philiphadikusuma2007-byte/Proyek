@@ -1,0 +1,1 @@
+enum GameState{World, Battle, Gacha, Menu}

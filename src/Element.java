@@ -1,0 +1,1 @@
+enum Element{Fire, Water, Grass, Electric, Earth, Shadow, Holy, Wind, Dark, Light}
