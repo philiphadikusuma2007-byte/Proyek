@@ -6,7 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.awt.*;
 import java.awt.event.*;
@@ -284,7 +284,7 @@ public class WorldManager {
         }
         if (code == KeyEvent.VK_G) {
             gp.gold += 500; // Tambah gold langsung ke GamePanel
-            // Set alert kustom biar ada efek pop-up pemberitahuan keren di layar!
+            JOptionPane.showMessageDialog(gp, "CHEAT ACTIVATED GOLD +500");
             return;
         }
         if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { gp.playerDirection = 1; gp.isMoving = true; }

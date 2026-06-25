@@ -369,13 +369,29 @@ public class MenuManager {
         }
         gp.gold -= price;
         boolean ditemukan = false;
+        
+        // Sederhanakan string type target belanjaan untuk pengecekan (tanpa spasi, huruf kecil semua)
+        String typeTarget = type.trim().replace(" ", "").toLowerCase();
+        
         for(Items i : gp.inventory){
-            if (i.type.equals(type)){
+            // Sederhanakan juga string type item yang ada di inventory saat ini
+            String typeDiTas = i.type.trim().replace(" ", "").toLowerCase();
+            String namaDiTas = i.name.trim().replace(" ", "").toLowerCase();
+            String namaTarget = nama.trim().replace(" ", "").toLowerCase();
+            
+            // Cek kesamaan tipe ATAU kesamaan nama secara mutlak tanpa peduli spasi & case
+            if (typeDiTas.equals(typeTarget) || namaDiTas.equals(namaTarget)){
                 i.qty++;
                 ditemukan = true;
                 break;
             }
         }
+        
+        // Baru dipasang pengaman: Slot baru HANYA dibuat jika benar-benar tidak ditemukan
+        if (!ditemukan) {
+            gp.inventory.add(new Items(nama, type, 1));
+        }
+        
         JOptionPane.showMessageDialog(gp, "Berhasil membeli 1x " + nama + "!");
     }
 
