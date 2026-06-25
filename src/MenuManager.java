@@ -42,7 +42,8 @@ public class MenuManager {
                             "6. Gacha (10x Pull) [-500 Gold]",
                             "7. Shop", 
                             "8. Save Game", 
-                            "9. Load Game"};
+                            "9. Load Game",
+                            "10. Exit Game"};
             for(int i=0; i<items.length; i++) {
                 Color warnaOpsi = (selectIdx == i) ? Color.GREEN : Color.WHITE;
                 drawStroke(g2, (selectIdx == i ? " > " : "   ") + items[i], 260, 160 + (i * 35), warnaOpsi);
@@ -152,7 +153,7 @@ public class MenuManager {
         }
 
         int limit = 1;
-        if(sectionIndex == 0) limit = 9;
+        if(sectionIndex == 0) limit = 10;
         else if(sectionIndex == 1) limit = gp.inventory.size() + 1;
         else if(sectionIndex == 2) limit = gp.waypoints.size() + 1;
         else if(sectionIndex == 3) limit = gp.storage.size() + 1;
@@ -171,6 +172,12 @@ public class MenuManager {
                 else if(selectIdx == 6) { sectionIndex = 4; selectIdx = 0;}
                 else if(selectIdx == 7) saveGame();
                 else if(selectIdx == 8) loadGame();
+                else if(selectIdx == 9){
+                    int confirm = JOptionPane.showConfirmDialog(gp, "Apakah Anda yakin ingin keluar dari game?", "Keluar Game", JOptionPane.YES_NO_OPTION);
+                    if (confirm == JOptionPane.YES_NO_OPTION){
+                        System.exit(0);
+                    }
+                }
             } else if (sectionIndex == 1) {
                 if (selectIdx == gp.inventory.size()) {
                     sectionIndex = 0;
@@ -255,42 +262,104 @@ public class MenuManager {
     }
 
     private void saveGame() {
-    File f = new File("assets/save_game.txt");
+    File f = new File("assets/saves/save_game.txt");
     try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
-        // Tulis data krusial secara berurutan, pisahkan dengan spasi atau baris baru
-        bw.write(gp.playerX + "\n");
-        bw.write(gp.playerY + "\n");
-        bw.write(gp.gold + "\n");
-        
-        JOptionPane.showMessageDialog(gp, "💾 Game berhasil disimpan!");
-    } catch (IOException e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(gp, "❌ Gagal menyimpan game.");
-    }
+            // 1. Status Dasar Player
+            bw.write(gp.playerX + "\n");
+            bw.write(gp.playerY + "\n");
+            bw.write(gp.gold + "\n");
+            // 2. Data Inventory
+            bw.write(gp.inventory.size() + "\n");
+            for (Items it : gp.inventory) {
+                bw.write(it.name + "," + it.type + "," + it.qty + "\n");
+            }
+            // 3. Data Waypoint
+            bw.write(gp.waypoints.size() + "\n");
+            for (Waypoints wp : gp.waypoints) {
+                bw.write(wp.name + "," + wp.discovered + "\n");
+            }
+            // 4. Data Koleksi Monster Gudang (Storage)
+            bw.write(gp.storage.size() + "\n");
+            for (Monsters m : gp.storage) {
+                // 🌟 UPDATE: Ditambahkan m.element.name() ke dalam baris save
+                bw.write(m.name + "," + m.element.name() + "," + m.rarity.name() + "," + 
+                         m.level + "," + m.hp + "," + m.maxHp + "," + 
+                         m.attack + "," + m.defense + "," + m.speed + "\n");
+            }
+            // 5. Data Team Aktif
+            bw.write(gp.team.size() + "\n");
+            for (Monsters m : gp.team) {
+                bw.write(gp.storage.indexOf(m) + "\n");
+            }
+            JOptionPane.showMessageDialog(gp, "💾 Semua data permainan berhasil disimpan!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(gp, "❌ Gagal menyimpan game.");
+        }
     }
 
     @SuppressWarnings("unchecked")
     private void loadGame() {
-    File f = new File("assets/save_game.txt");
+    File f = new File("assets/saves/save_game.txt");
     if (!f.exists()) {
         JOptionPane.showMessageDialog(gp, "❌ File save-an tidak ditemukan!");
         return;
-    }
-
-    try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-        // WAJIB BACA SECARA BERURUTAN sesuai urutan saat kamu nge-save tadi!
-        gp.playerX = Integer.parseInt(br.readLine());
-        gp.playerY = Integer.parseInt(br.readLine());
-        gp.gold = Integer.parseInt(br.readLine());
-        
-        // Kembalikan status game ke World Map agar layar langsung update
-        gp.currentState = GameState.World; 
-        
-        JOptionPane.showMessageDialog(gp, "📂 Berhasil memuat data permainan!");
-    } catch (Exception e) {
-        e.printStackTrace();
-        JOptionPane.showMessageDialog(gp, "❌ File save rusak atau error saat membaca.");
-    }
+    }try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+            // 1. Status Dasar Player
+            gp.playerX = Integer.parseInt(br.readLine());
+            gp.playerY = Integer.parseInt(br.readLine());
+            gp.gold = Integer.parseInt(br.readLine());
+            // 2. Data Inventory
+            gp.inventory.clear();
+            int totalInventory = Integer.parseInt(br.readLine());
+            for (int i = 0; i < totalInventory; i++) {
+                String[] dataItem = br.readLine().split(",");
+                gp.inventory.add(new Items(dataItem[0], dataItem[1], Integer.parseInt(dataItem[2])));
+            }
+            // 3. Data Waypoint
+            int totalWaypoints = Integer.parseInt(br.readLine());
+            for (int i = 0; i < totalWaypoints; i++) {
+                String[] dataWP = br.readLine().split(",");
+                if (i < gp.waypoints.size()) {
+                    gp.waypoints.get(i).discovered = Boolean.parseBoolean(dataWP[1]);
+                }
+            }
+            // 4. Data Koleksi Monster Gudang (Storage)
+            gp.storage.clear();
+            int totalStorage = Integer.parseInt(br.readLine());
+            for (int i = 0; i < totalStorage; i++) {
+                String[] dataMon = br.readLine().split(",");
+                String name = dataMon[0];
+                Element element = Element.valueOf(dataMon[1]);
+                Rarity rarity = Rarity.valueOf(dataMon[2]);
+                int level = Integer.parseInt(dataMon[3]);
+                int hp = Integer.parseInt(dataMon[4]);
+                int maxHp = Integer.parseInt(dataMon[5]);
+                int attack = Integer.parseInt(dataMon[6]);
+                int defense = Integer.parseInt(dataMon[7]);
+                int speed = Integer.parseInt(dataMon[8]);
+                Monsters m = new Monsters(name, element, rarity, maxHp, attack, defense, speed);
+                m.level = level;
+                m.hp = hp;
+                gp.storage.add(m);
+            }
+            // 5. Data Team Aktif
+            gp.team.clear();
+            int totalTeam = Integer.parseInt(br.readLine());
+            for (int i = 0; i < totalTeam; i++) {
+                int indeksStorage = Integer.parseInt(br.readLine());
+                if (indeksStorage >= 0 && indeksStorage < gp.storage.size()) {
+                    gp.team.add(gp.storage.get(indeksStorage));
+                }
+            }
+            sectionIndex = 0;
+            selectIdx = 0;
+            gp.currentState = GameState.World; 
+            JOptionPane.showMessageDialog(gp, "📂 Berhasil memuat data permainan dari saves.txt!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(gp, "❌ File saves.txt lama tidak cocok atau rusak. Silakan main dan Save ulang!");
+        }
     }
 
     private void beliItem(String nama, String type, int price){
