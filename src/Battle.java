@@ -1,7 +1,7 @@
-import java.util.ArrayList;
-import java.util.Random;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.*;
 
 public class Battle {
@@ -23,6 +23,9 @@ public class Battle {
         logs.clear();
         menuIndex = 0; 
         subMenu = 0;
+        BGM.stopBGM();                                              
+        BGM.playBGM("assets/bgm/battle.wav");
+        Sound.playSound("assets/sounds/enemy-hit.wav");
         // Ambil monster pertama tim player yang masih hidup
         playerActive = null;
         for(Monsters m : gp.team) { 
@@ -151,7 +154,11 @@ public class Battle {
                 selesai = false;
                 earnedGold = 0;
                 earnedXP = 0;
+                BGM.stopBGM();                          
                 gp.currentState = GameState.World;
+                Timer t = new Timer(300, ev -> BGM.playBGM("assets/bgm/sonic-hedgehog.wav"));
+                t.setRepeats(false);
+                t.start();                              
             }
             return;
         }
@@ -270,8 +277,17 @@ public class Battle {
     }
 
     private void endBattleLater() {
-        Timer timer = new Timer(2000, e -> gp.currentState = GameState.World);
-        timer.setRepeats(false);
-        timer.start();
+        Timer timer = new Timer(2000, e -> {
+            gp.currentState = GameState.World;
+            BGM.stopBGM();
+        // Delay sedikit sebelum play ulang agar clip benar-benar closed
+            Timer restartTimer = new Timer(300, ev -> {
+                BGM.playBGM("assets/bgm/sonic-hedgehog.wav");
+            });
+        restartTimer.setRepeats(false);
+        restartTimer.start();
+        });
+    timer.setRepeats(false);
+    timer.start();
     }
 }

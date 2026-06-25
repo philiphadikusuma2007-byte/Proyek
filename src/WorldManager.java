@@ -1,3 +1,6 @@
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,9 +10,6 @@ import java.io.IOException;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.awt.*;
-import java.awt.event.*;
 
 public class WorldManager {
     GamePanel gp;
@@ -93,10 +93,12 @@ public class WorldManager {
                     if(tileSign == 7) {
                         gp.isMoving = false; // Hentikan pergerakan player sejenak
                         // Loop semua monster di tim player untuk memulihkan HP
-                        for(Monsters m : gp.team) {
+                        for (Monsters m : gp.team) {
                             m.hp = m.maxHp;
                             m.currentStatus = StatusEffect.None; // Sembuhkan juga efek status buruk jika ada
                         }
+                        Sound.playSound("assets/sounds/healing.wav");
+
                         // Tampilkan pesan dialog sesuai permintaan
                         JOptionPane.showMessageDialog(gp, "Semua pokemonmu sudah kembali pulih!");
                         // Opsional: Mundurkan player 1 tile atau geser sedikit agar tidak terus-terusan men-trigger dialog
@@ -134,6 +136,7 @@ public class WorldManager {
                     gp.playerX = wp.x * Game.tileSize;
                     gp.playerY = wp.y * Game.tileSize;
                     wp.discovered = true;
+                    Sound.playSound("assets/sounds/waypoint-paid.wav");
                     JOptionPane.showMessageDialog(gp, "Waypoint Berhasil Dibuka: " + wp.name);
                     break;
                 }

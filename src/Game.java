@@ -16,6 +16,8 @@ public class Game extends JFrame{
         pack();
         setLocationRelativeTo(null);
         panel.startGame();
+        BGM.playBGM("assets/bgm/sonic-hedgehog.wav");
+
     }
     public static void main(String[] args) {
         SwingUtilities.invokeLater(()->{
