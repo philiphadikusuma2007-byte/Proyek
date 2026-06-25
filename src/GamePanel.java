@@ -1,4 +1,3 @@
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 import java.awt.event.*;
@@ -21,6 +20,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     public int playerDirection = 0;
     public boolean isMoving = false;
     public ArrayList<Monsters> team = new ArrayList<>();
+    public ArrayList<Monsters> storage = new ArrayList<>();
     public ArrayList<Items> inventory = new ArrayList<>();
     public ArrayList<Waypoints> waypoints = new ArrayList<>();
     
@@ -37,9 +37,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         battleEngine = new Battle(this);
         gachaEngine = new Gacha(this);
         menuManager = new MenuManager(this);
+        Monsters starter = AssetGenerator.allMonsters.get(0).cloneMonster();
 
         // Berikan starter monster
-        team.add(AssetGenerator.allMonsters.get(0).cloneMonster());
+        team.add(starter);
+        storage.add(starter);
         
         // Item bawaan
         inventory.add(new Items("Potion", "POTION", 5));

@@ -17,12 +17,25 @@ public class Battle {
     public Battle(GamePanel gp) { this.gp = gp; }
 
     public void startBattle() {
+        selesai = false;
+        earnedGold = 0;
+        earnedXP = 0;
         logs.clear();
-        menuIndex = 0; subMenu = 0;
+        menuIndex = 0; 
+        subMenu = 0;
         // Ambil monster pertama tim player yang masih hidup
         playerActive = null;
-        for(Monsters m : gp.team) { if(m.hp > 0) { playerActive = m; break; } }
-        if(playerActive == null) playerActive = gp.team.get(0); // fallback
+        for(Monsters m : gp.team) { 
+            if(m.hp > 0) { 
+                playerActive = m; 
+                break; 
+            } 
+        }
+        if(playerActive == null) { 
+            playerActive = gp.team.get(0); // Ambil monster pertama
+            playerActive.hp = 1;          // Berikan pertolongan pertama 1 HP agar game TIDAK CRASH/HITAM
+            logs.add("⚠️ " + playerActive.name + " bangkit kembali dengan 1 HP untuk bertahan hidup!");
+        }
 
         // Ambil random monster dari database aset
         Random r = new Random();
@@ -133,19 +146,34 @@ public class Battle {
 
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
+        if (selesai){
+            if(code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE){
+                selesai = false;
+                earnedGold = 0;
+                earnedXP = 0;
+                gp.currentState = GameState.World;
+            }
+            return;
+        }
         int limit = (subMenu == 0) ? 4 : (subMenu == 1 ? playerActive.skills.size() : gp.inventory.size());
-
         if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) menuIndex = (menuIndex - 1 + limit) % limit;
         if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) menuIndex = (menuIndex + 1) % limit;
-        
         if(code == KeyEvent.VK_ESCAPE && subMenu != 0) { subMenu = 0; menuIndex = 0; return; }
-
         if(code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
             if(subMenu == 0) {
                 if(menuIndex == 0) executeBasicAttack();
-                else if(menuIndex == 1) { subMenu = 1; menuIndex = 0; }
-                else if(menuIndex == 2) { subMenu = 2; menuIndex = 0; }
-                else if(menuIndex == 3) { logs.add("🏃 Berhasil kabur dari pertarungan!"); endBattleLater(); }
+                else if(menuIndex == 1) {
+                    subMenu = 1; 
+                    menuIndex = 0; 
+                }
+                else if(menuIndex == 2) { 
+                    subMenu = 2; 
+                    menuIndex = 0; 
+                }
+                else if(menuIndex == 3) { 
+                    logs.add("🏃 Berhasil kabur dari pertarungan!"); 
+                    selesai = true;
+                }
             } else if(subMenu == 1) {
                 executeSkillAttack(playerActive.skills.get(menuIndex));
             } else if(subMenu == 2) {
@@ -216,14 +244,28 @@ public class Battle {
             int goldDrop = 30 + r.nextInt(41) + (enemy.level * 5); // Dapat antara 30-70 Gold + Bonus Level
             gp.gold += goldDrop; // Tambahkan ke data pemain
             logs.add("💰 Anda mendapatkan " + goldDrop + " Gold!"); // Tampilkan di log pertarungan
-            
-            endBattleLater();
         } else if(playerActive.hp <= 0) {
-            selesai = true;
-            earnedGold = 0;
-            earnedXP = 0;
-            logs.add("💀 " + playerActive.name + " pingsan!");
-            endBattleLater();
+            boolean hidup = false;
+            for(Monsters m : gp.team) {
+                if(m.hp > 0) {
+                    hidup = true;
+                    break;
+                }
+            }
+            if (!hidup) {
+                selesai = true;
+                earnedXP = 0;
+                earnedGold = 0;
+                logs.add("💀 Semua monster aktifmu pingsan!");
+            } else {
+                logs.add("💀 " + playerActive.name + " pingsan! Pilih monstermu yang lain!");
+                for (Monsters m : gp.team){
+                    if(m.hp > 0){
+                        playerActive = m;
+                        break;
+                    }
+                }
+            }
         }
     }
 

@@ -1,1 +1,1 @@
-enum GameState{World, Battle, Gacha, Menu, Shop}
+enum GameState{World, Battle, Gacha, Menu, Shop, Alert}

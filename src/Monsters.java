@@ -9,6 +9,9 @@ public class Monsters implements Serializable{
     ArrayList<Skills> skills = new ArrayList<>();
     StatusEffect currentStatus = StatusEffect.None;
     int statusDuration = 0;
+    public Items equip = null;
+    boolean targetEquip = false;
+    Items itemDiequip = null;
 
     public Monsters(String name, Element element, Rarity rarity, int hp, int att, int def, int spd) {
         this.name = name; 
@@ -22,6 +25,7 @@ public class Monsters implements Serializable{
         this.speed = spd;
         this.exp = 0; 
         this.maxExp = 100;
+        this.equip = null;
         initDefaultSkills();
     }
     

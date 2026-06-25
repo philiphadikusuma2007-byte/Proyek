@@ -17,6 +17,7 @@ public class WorldManager {
     BufferedImage[] tileImages = new BufferedImage[15]; // 0:Grass, 1:Road, 2:Water, 3:Tree, 4:Rock, 5:House, 6:Waypoint
     BufferedImage playerSpriteSheet;
     int animFrame = 0, animTimer = 0;
+    String alertMessage = "";
 
     public WorldManager(GamePanel gp) {
         this.gp = gp;
@@ -106,7 +107,20 @@ public class WorldManager {
                         return;
                     }
                     // Cek Trigger Random Encounter di Rumput (ID 0)
-                    if(tileSign == 0 && new Random().nextDouble() < 0.005) { 
+                    if(tileSign == 0 && new Random().nextDouble() < 0.005) {
+                        boolean hidup = false;
+                        for (Monsters m : gp.team){
+                            if (m.hp > 0){
+                                hidup = true;
+                                break;
+                            }
+                        }
+                        if (!hidup) {
+                            gp.isMoving = false;
+                            alertMessage = "❌ Semua Pokémon-mu pingsan!\nKamu tidak bisa bertarung. Pergilah ke Pokémon Centre untuk memulihkan mereka!";
+                            gp.currentState = GameState.Alert;
+                            return;
+                        }
                         gp.isMoving = false;
                         gp.battleEngine.startBattle();
                         return;
@@ -221,6 +235,27 @@ public class WorldManager {
         drawStroke(g2, teksPetunjuk, 20, 35, Color.WHITE);
         drawStroke(g2, teksPosisi, 20, 65, Color.WHITE);
         drawStroke(g2, teksGold, 20, 95, Color.YELLOW);
+
+        if (gp.currentState == GameState.Alert) {
+            // 1. Kotak Background Hitam Transparan di Tengah Layar
+            g2.setColor(new Color(0, 0, 0, 230));
+            g2.fillRect(150, 180, 500, 200);
+            
+            // 2. Border/Garis Tepi Kotak Warna Merah Peringatan
+            g2.setColor(Color.RED);
+            g2.drawRect(150, 180, 500, 200);
+
+            // 3. Cetak Tulisan Peringatan (Pakai fungsi stroke biar jelas)
+            g2.setFont(new Font("SansSerif", Font.BOLD, 22));
+            drawStroke(g2, "⚠️ PERINGATAN ⚠️", 310, 230, Color.RED);
+
+            g2.setFont(new Font("SansSerif", Font.BOLD, 16));
+            drawStroke(g2, alertMessage, 180, 280, Color.WHITE);
+
+            // 4. Petunjuk Tombol Tutup
+            g2.setFont(new Font("SansSerif", Font.ITALIC, 14));
+            drawStroke(g2, "[ Tekan ENTER / SPASI untuk Melanjutkan ]", 260, 340, Color.GRAY);
+        }
     }
 
     private void drawStroke(Graphics2D g2, String teks, int x, int y, Color warnaTeks){
@@ -240,6 +275,18 @@ public class WorldManager {
 
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
+        if (gp.currentState == GameState.Alert) {
+            if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
+                gp.currentState = GameState.World; // Kembalikan game ke normal
+                alertMessage = ""; // Reset pesan
+            }
+            return; // Kunci agar player tidak bisa jalan selama alert aktif
+        }
+        if (code == KeyEvent.VK_G) {
+            gp.gold += 500; // Tambah gold langsung ke GamePanel
+            // Set alert kustom biar ada efek pop-up pemberitahuan keren di layar!
+            return;
+        }
         if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { gp.playerDirection = 1; gp.isMoving = true; }
         if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { gp.playerDirection = 0; gp.isMoving = true; }
         if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) { gp.playerDirection = 2; gp.isMoving = true; }

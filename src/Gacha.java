@@ -13,36 +13,6 @@ public class Gacha {
 
     public Gacha(GamePanel gp) { this.gp = gp; }
 
-    public void doPull(int amount) {
-        int cost = amount * 50;
-        if(gp.gold < cost){
-            JOptionPane.showMessageDialog(gp, "Gold tidak cukup! Anda butuh " + cost + " Gold untuk " + amount + "x Pull.");
-            gp.currentState = GameState.Menu;
-            return;
-        }
-        gp.gold -= cost;
-        pullResults.clear();
-        Random r = new Random();
-        for(int i=0; i<amount; i++) {
-            double roll = r.nextDouble();
-            Rarity targetRarity = Rarity.Common;
-            if(roll < 0.02) targetRarity = Rarity.Legendary;
-            else if(roll < 0.10) targetRarity = Rarity.Epic;
-            else if(roll < 0.30) targetRarity = Rarity.Rare;
-
-            // Cari list monster dengan rarity tersebut
-            ArrayList<Monsters> pools = new ArrayList<>();
-            for(Monsters m : AssetGenerator.allMonsters) {
-                if(m.rarity == targetRarity) pools.add(m);
-            }
-            Monsters rolled = pools.get(r.nextInt(pools.size())).cloneMonster();
-            gp.team.add(rolled);
-            pullResults.add(rolled);
-        }
-        showIndex = 0;
-        gp.currentState = GameState.Gacha;
-    }
-
     public void draw(Graphics2D g2) {
         g2.setColor(Color.BLACK);
         g2.fillRect(0, 0, Game.screenWidth, Game.screenHeight);
