@@ -2,8 +2,6 @@ package UI;
 import java.util.ArrayList;
 import javax.swing.JPanel;
 
-import Game.Battle;
-import Game.Gacha;
 import Model.*;
 import Model.ItemsFIle.Potion;
 import Model.ItemsFIle.ReviveItem;
@@ -105,6 +103,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         Graphics2D g2 = (Graphics2D) g;
         
         if (currentState == GameState.World) worldManager.draw(g2);
+        else if (currentState == GameState.Alert) worldManager.draw(g2);
         else if (currentState == GameState.Battle) {
             battleEngine.draw(g2);
             if (battleEngine != null){
@@ -122,6 +121,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     // Key Listener delegation
     @Override public void keyPressed(KeyEvent e) {
         if(currentState == GameState.World) worldManager.keyPressed(e);
+        else if(currentState == GameState.Alert) worldManager.keyPressed(e);
         else if(currentState == GameState.Battle) battleEngine.keyPressed(e);
         else if(currentState == GameState.Gacha) gachaEngine.keyPressed(e);
         else if(currentState == GameState.Menu) menuManager.keyPressed(e);
