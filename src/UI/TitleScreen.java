@@ -19,39 +19,39 @@ public class TitleScreen {
     private final GamePanel gp;
 
     // ── Sub-components ────────────────────────────────────────────────────────
-    private final StarField      starField;
-    private final PixelCreature  creature;
-    private final List<String>   menuLabels;
+    private final StarField starField;
+    private final PixelCreature creature;
+    private final List<String> menuLabels;
 
     // ── State ─────────────────────────────────────────────────────────────────
-    private int     selectedIndex = 0;
-    private boolean showMenu      = false;
+    private int selectedIndex = 0;
+    private boolean showMenu = false;
 
     // ── Animation ─────────────────────────────────────────────────────────────
-    private int   titleTick = 0;
+    private int titleTick = 0;
     private float titleBobY = 0f;
-    private int   blinkTick = 0;
+    private int blinkTick = 0;
     private boolean blinkOn = true;
 
     // ── Colours ───────────────────────────────────────────────────────────────
-    private static final Color BG_TOP      = new Color( 10,  10,  40);
-    private static final Color BG_BOTTOM   = new Color(  5,   5,  20);
-    private static final Color TITLE_GOLD  = new Color(255, 220,  40);
+    private static final Color BG_TOP = new Color( 10,  10,  40);
+    private static final Color BG_BOTTOM = new Color(  5,   5,  20);
+    private static final Color TITLE_GOLD = new Color(255, 220,  40);
     private static final Color TITLE_SHADE = new Color(180,  80,   0);
-    private static final Color SUBTITLE_C  = new Color(120, 200, 255);
-    private static final Color PROMPT_C    = new Color(200, 200, 200);
-    private static final Color BORDER_C    = new Color( 60, 120, 220);
-    private static final Color PANEL_BG    = new Color(  0,   0,   0, 170);
-    private static final Color SEL_COLOR   = new Color(255, 255,  80);
+    private static final Color SUBTITLE_C = new Color(120, 200, 255);
+    private static final Color PROMPT_C = new Color(200, 200, 200);
+    private static final Color BORDER_C = new Color( 60, 120, 220);
+    private static final Color PANEL_BG = new Color(  0,   0,   0, 170);
+    private static final Color SEL_COLOR = new Color(255, 255,  80);
     private static final Color UNSEL_COLOR = new Color(200, 200, 200);
-    private static final Color SHADOW_C    = new Color( 50,  50,  50);
+    private static final Color SHADOW_C = new Color( 50,  50,  50);
 
     // ── Fonts ─────────────────────────────────────────────────────────────────
-    private static final Font FONT_TITLE    = new Font("Courier New", Font.BOLD,  72);
+    private static final Font FONT_TITLE = new Font("Courier New", Font.BOLD,  72);
     private static final Font FONT_SUBTITLE = new Font("Courier New", Font.BOLD,  18);
-    private static final Font FONT_MENU     = new Font("Courier New", Font.BOLD,  28);
-    private static final Font FONT_PROMPT   = new Font("Courier New", Font.PLAIN, 14);
-    private static final Font FONT_VER      = new Font("Courier New", Font.PLAIN, 11);
+    private static final Font FONT_MENU = new Font("Courier New", Font.BOLD,  28);
+    private static final Font FONT_PROMPT = new Font("Courier New", Font.PLAIN, 14);
+    private static final Font FONT_VER = new Font("Courier New", Font.PLAIN, 11);
 
     // ─────────────────────────────────────────────────────────────────────────
 
@@ -89,7 +89,7 @@ public class TitleScreen {
 
     public void draw(Graphics2D g2) {
         // Pixel-crisp rendering
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,      RenderingHints.VALUE_ANTIALIAS_OFF);
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
         g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 
         drawBackground(g2);
@@ -100,8 +100,7 @@ public class TitleScreen {
         drawSubtitle(g2);
 
         if (showMenu) drawMenu(g2);
-        else          drawPressEnter(g2);
-
+        else drawPressEnter(g2);
         drawVersion(g2);
     }
 
@@ -157,9 +156,9 @@ public class TitleScreen {
         // Gold corner squares
         int cs = 10;
         g2.setColor(TITLE_GOLD);
-        g2.fillRect(8,                   8,                    cs, cs);
-        g2.fillRect(Game.screenWidth-8-cs, 8,                    cs, cs);
-        g2.fillRect(8,                   Game.screenHeight-8-cs, cs, cs);
+        g2.fillRect(8, 8, cs, cs);
+        g2.fillRect(Game.screenWidth-8-cs, 8, cs, cs);
+        g2.fillRect(8, Game.screenHeight-8-cs, cs, cs);
         g2.fillRect(Game.screenWidth-8-cs, Game.screenHeight-8-cs, cs, cs);
         g2.setStroke(new BasicStroke(1));
     }
@@ -219,7 +218,7 @@ public class TitleScreen {
         int[] itemY = { Game.screenHeight - 180, Game.screenHeight - 130 };
 
         for (int i = 0; i < menuLabels.size(); i++) {
-            String label    = menuLabels.get(i);
+            String label = menuLabels.get(i);
             boolean isSelected = (i == selectedIndex);
 
             // Shadow
@@ -264,11 +263,11 @@ public class TitleScreen {
             color = new Color[COUNT];
             Random rng = new Random(42);
             for (int i = 0; i < COUNT; i++) {
-                x[i]     = rng.nextInt(w);
-                y[i]     = rng.nextInt(h);
-                size[i]  = rng.nextInt(3) + 1;
+                x[i] = rng.nextInt(w);
+                y[i] = rng.nextInt(h);
+                size[i] = rng.nextInt(3) + 1;
                 speed[i] = rng.nextInt(2) + 1;
-                int b    = 150 + rng.nextInt(106);
+                int b = 150 + rng.nextInt(106);
                 color[i] = new Color(b, b, b);
             }
         }
