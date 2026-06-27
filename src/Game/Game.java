@@ -12,7 +12,7 @@ public class Game extends JFrame{
     public static final int screenHeight = 600;
 
     public Game(){
-        setTitle("Monster Collection");
+        setTitle("Evomon");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         AssetGenerator.generateAssets();

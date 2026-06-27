@@ -2,14 +2,7 @@ package Model;
 import java.io.Serializable;
 import java.util.*;
 
-import Model.ElementsFile.Dark;
-import Model.ElementsFile.Earth;
-import Model.ElementsFile.Electric;
-import Model.ElementsFile.Fire;
-import Model.ElementsFile.Grass;
-import Model.ElementsFile.Light;
-import Model.ElementsFile.Water;
-import Model.ElementsFile.Wind;
+import Model.ElementsFile.*;
 import Model.SkillsFile.*;
 import Model.StatusEffectFile.*;
 

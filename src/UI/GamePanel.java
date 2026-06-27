@@ -3,12 +3,9 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 
 import Model.*;
-import Model.ItemsFIle.Potion;
-import Model.ItemsFIle.ReviveItem;
-import Model.ItemsFIle.SuperPotion;
+import Model.ItemsFIle.*;
 import Util.AssetGenerator;
-import World.Waypoints;
-import World.WorldManager;
+import World.*;
 import Game.*;
 
 import java.awt.event.*;
@@ -114,6 +111,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         }
         else if (currentState == GameState.Gacha) gachaEngine.draw(g2);
         else if (currentState == GameState.Menu) menuManager.draw(g2);
+        else if(currentState == GameState.Minimap) {
+            worldManager.draw(g2);
+            worldManager.drawMinimap(g2);
+        }
         
         g2.dispose();
     }
@@ -125,6 +126,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         else if(currentState == GameState.Battle) battleEngine.keyPressed(e);
         else if(currentState == GameState.Gacha) gachaEngine.keyPressed(e);
         else if(currentState == GameState.Menu) menuManager.keyPressed(e);
+        else if(currentState == GameState.Minimap) worldManager.keyPressed(e);
     }
     @Override public void keyReleased(KeyEvent e) { if(currentState == GameState.World) worldManager.keyReleased(e); }
     @Override public void keyTyped(KeyEvent e) {}

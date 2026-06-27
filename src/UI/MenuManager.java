@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 
 import Game.*;
 import Model.*;
-import Model.Items.*;
 import Model.ItemsFIle.Potion;
 import Model.ItemsFIle.ReviveItem;
 import Model.ItemsFIle.SuperPotion;
@@ -42,7 +41,7 @@ public class MenuManager {
             String[] items = {"1. Lanjutkan Game", 
                             "2. Buka Tas Inventory", 
                             "3. Fast Travel Map", 
-                            "4. Koleksi Monster Anda", 
+                            "4. Koleksi EvomonMu", 
                             "5. Gacha (1x Pull) [-50 Gold]", 
                             "6. Gacha (10x Pull) [-500 Gold]",
                             "7. Shop", 
@@ -85,9 +84,9 @@ public class MenuManager {
             g2.setFont(new Font("SansSerif", Font.ITALIC, 14));
             drawStroke(g2, "[ W/S: Navigasi | ENTER: Eksekusi Teleport | ESC: Keluar ]", 110, 530, Color.GRAY);
         } else if(sectionIndex == 3) { 
-            drawStroke(g2, "=== POKEMON KAMU ===", 240, 60, Color.WHITE);
+            drawStroke(g2, "=== EVOMON KAMU ===", 240, 60, Color.WHITE);
             g2.setFont(new Font("SansSerif", Font.PLAIN, 14));
-            drawStroke(g2, "Pilih Pokémon untuk Pasang (EQUIP) / Lepas dari Tim Aktif:", 180, 95, Color.CYAN);
+            drawStroke(g2, "Pilih Evomon untuk dipasang (EQUIP) / Lepas dari Tim Aktif:", 180, 95, Color.CYAN);
 
             if (gp.storage.isEmpty()) {
                 g2.setFont(new Font("SansSerif", Font.ITALIC, 16));
@@ -126,20 +125,18 @@ public class MenuManager {
                 drawStroke(g2, "Total Koleksi: " + totalMonster + " | Slot Terpilih: " + (selectIdx + 1) + " | Tim: " + gp.team.size() + "/6", 120, 540, Color.YELLOW);
             }
             g2.setFont(new Font("SansSerif", Font.ITALIC, 14));
-            drawStroke(g2, "[ ENTER/SPACE: Pasang/Lepas Pokémon | W/S: Navigasi | ESC: Keluar ]", 100, 565, Color.GRAY);
+            drawStroke(g2, "[ ENTER/SPACE: Pasang/Lepas Evomon | W/S: Navigasi | ESC: Keluar ]", 100, 565, Color.GRAY);
         } else if (sectionIndex == 4){
             g2.drawString("=== ITEM SHOP ADVENTURER ===", 240, 80);
             g2.setColor(Color.YELLOW);
             g2.drawString("Gold Kamu : " + gp.gold + " Gold", 300, 110);
             g2.setColor(Color.WHITE);
-
             String[] shopItems = {
                 "1. Potion (+50 HP)         [-20 Gold]",
                 "2. Super Potion (+150 HP)  [-50 Gold]",
                 "3. Revive                  [-100 Gold]",
                 "4. Keluar dari Shop"
             };
-
             for(int i = 0; i < shopItems.length; i++){
                 g2.drawString((selectIdx == i ? " > " : "   ") + shopItems[i], 200, 180 + (i * 40));
             }
@@ -192,7 +189,7 @@ public class MenuManager {
                 if(gp.inventory.isEmpty()) return;
                 Items itemTerpilih = gp.inventory.get(selectIdx);
                 // Karena hanya ada Potion, Super Potion, & Revive, semuanya hanya bisa dipakai saat battle
-                JOptionPane.showMessageDialog(gp, itemTerpilih.getName() + " adalah item pemulih! Gunakan item ini saat giliran bertarung (Battle) untuk memulihkan Pokémon-mu.");
+                JOptionPane.showMessageDialog(gp, itemTerpilih.getName() + " adalah item pemulih! Gunakan item ini saat giliran bertarung (Battle) untuk memulihkan Evomon-mu.");
             } else if(sectionIndex == 2) { // Logic Teleport
                 if (selectIdx == gp.waypoints.size()) {
                     sectionIndex = 0;
@@ -237,20 +234,20 @@ public class MenuManager {
                     Monsters pokemonTerpilih = gp.storage.get(selectIdx);
 
                     // =============================================================
-                    // LOGIKA TOGGLE EQUIP / UN-EQUIP POKÉMON
+                    // LOGIKA TOGGLE EQUIP / UN-EQUIP EVOMON
                     // =============================================================
                     if (gp.team.contains(pokemonTerpilih)) {
                         // 1. Logika UN-EQUIP (Jika sudah ada di tim, maka dilepas)
                         if (gp.team.size() <= 1) {
-                            JOptionPane.showMessageDialog(gp, "❌ Minimal harus ada 1 Pokémon di dalam tim aktifmu!");
+                            JOptionPane.showMessageDialog(gp, "❌ Minimal harus ada 1 Evomon di dalam tim aktifmu!");
                         } else {
                             gp.team.remove(pokemonTerpilih);
                             JOptionPane.showMessageDialog(gp, "💼 " + pokemonTerpilih.getName() + " dilepas dari Tim Utama.");
                         }
                     } else {
                         // 2. Logika EQUIP (Jika belum ada di tim, maka dipasang)
-                        if (gp.team.size() >= 6) { // Batasi tim maksimal 6 Pokémon aktif
-                            JOptionPane.showMessageDialog(gp, "❌ Tim penuh! Lepas Pokémon lain terlebih dahulu (Maks 6).");
+                        if (gp.team.size() >= 6) { // Batasi tim maksimal 6 Evomon aktif
+                            JOptionPane.showMessageDialog(gp, "❌ Tim penuh! Lepas Evomon lain terlebih dahulu (Maks 6).");
                         } else {
                             gp.team.add(pokemonTerpilih);
                             JOptionPane.showMessageDialog(gp, "⚔️ " + pokemonTerpilih.getName() + " berhasil dipasang ke Tim Utama!");
@@ -259,8 +256,8 @@ public class MenuManager {
                 }
             } else if (sectionIndex == 4){
                 if (selectIdx == 0) beliItem("Potion", "POTION", 20);
-                else if (selectIdx == 1) beliItem("Super Potion", "SUPERPOTION", 50);
-                else if (selectIdx == 2) beliItem("Revive", "REVIVE", 100);
+                else if (selectIdx == 1) beliItem("Super Potion", "SUPER_POTION", 50);
+                else if (selectIdx == 2) beliItem("Revive", "REVIVE_ITEM", 100);
                 else if (selectIdx == 3) {sectionIndex = 0; selectIdx = 0;}
             } 
         }
@@ -366,7 +363,6 @@ public class MenuManager {
                     m.setSpeed(speed);
                     m.setExp(exp);
                     m.setMaxExp(maxExp);
-
                     gp.storage.add(m);
                 }
             }

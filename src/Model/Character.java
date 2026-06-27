@@ -64,8 +64,20 @@ public abstract class Character {
         return level;
     }
 
+    public void setMaxHp(int maxHp) {
+        this.maxHp = maxHp;
+    }
+
+    public void setExp(int exp) {
+        this.exp = exp;
+    }
+
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public void setMaxExp(int maxExp) {
+        this.maxExp = maxExp;
     }
 
     public ArrayList<Skills> getSkills() {

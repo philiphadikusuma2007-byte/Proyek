@@ -107,7 +107,7 @@ public class WorldManager {
                         Sound.playSound("assets/sounds/healing.wav");
 
                         // Tampilkan pesan dialog sesuai permintaan
-                        JOptionPane.showMessageDialog(gp, "Semua pokemonmu sudah kembali pulih!");
+                        JOptionPane.showMessageDialog(gp, "Semua Evomon-mu sudah kembali pulih!");
                         // Opsional: Mundurkan player 1 tile atau geser sedikit agar tidak terus-terusan men-trigger dialog
                         if(gp.playerDirection == 0) gp.playerY -= Game.tileSize;
                         if(gp.playerDirection == 1) gp.playerY += Game.tileSize;
@@ -126,7 +126,7 @@ public class WorldManager {
                         }
                         if (!hidup) {
                             gp.isMoving = false;
-                            alertMessage = "❌ Semua Pokémon-mu pingsan!\nKamu tidak bisa bertarung. Pergilah ke Pokémon Centre untuk memulihkan mereka!";
+                            alertMessage = "❌ Semua Evomon-mu pingsan!\nPergilah ke Evomon Centre untuk memulihkan mereka!";
                             gp.currentState = GameState.Alert;
                             return;
                         }
@@ -239,12 +239,18 @@ public class WorldManager {
         Font fontBesar = new Font("Sans Serif", Font.BOLD, 18);
         g2.setFont(fontBesar);
         g2.setColor(Color.WHITE);
-        String teksPetunjuk =  "Gunakan WASD/Arah Panah untuk Jalan. Tekan ESC/M: Menu Utama & Gacha";
+        String teksPetunjuk1 =  "Gunakan WASD/Arah Panah untuk Jalan";
+        String teksPetunjuk2 = "Tekan ESC: Menu Utama & Gacha";
+        String teksPetunjuk3 = "Tekan M: Mini Map";
         String teksPosisi = "Posisi: " + gp.playerX/32 + ", " + gp.playerY/32;
         String teksGold = "💰 Gold: " + gp.gold;
-        drawStroke(g2, teksPetunjuk, 20, 35, Color.WHITE);
-        drawStroke(g2, teksPosisi, 20, 65, Color.WHITE);
-        drawStroke(g2, teksGold, 20, 95, Color.YELLOW);
+        String teksCheat = "[CHEAT] Tekan G : +500 Gold";
+        drawStroke(g2, teksPetunjuk1, 20, 35, Color.WHITE);
+        drawStroke(g2, teksPetunjuk2, 20, 65, Color.WHITE);
+        drawStroke(g2, teksPetunjuk3, 20, 95, Color.WHITE);
+        drawStroke(g2, teksPosisi, 20, 125, Color.WHITE);
+        drawStroke(g2, teksGold, 20, 155, Color.YELLOW);
+        drawStroke(g2, teksCheat, 20, 185, Color.CYAN);
 
         if (gp.currentState == GameState.Alert) {
             // 1. Kotak Background Hitam Transparan di Tengah Layar
@@ -260,7 +266,11 @@ public class WorldManager {
             drawStroke(g2, "⚠️ PERINGATAN ⚠️", 310, 230, Color.RED);
 
             g2.setFont(new Font("SansSerif", Font.BOLD, 16));
-            drawStroke(g2, alertMessage, 180, 280, Color.WHITE);
+            String title = "❌ Semua Evomon-mu pingsan!";
+            FontMetrics fm = g2.getFontMetrics();
+            int x = 150 + (500 - fm.stringWidth(title)) / 2;
+            drawStroke(g2, title, x, 280, Color.WHITE);
+            drawStroke(g2, "Pergilah ke Evomon Centre untuk memulihkan mereka!", 180, 310, Color.WHITE);
 
             // 4. Petunjuk Tombol Tutup
             g2.setFont(new Font("SansSerif", Font.ITALIC, 14));
@@ -285,6 +295,12 @@ public class WorldManager {
 
     public void keyPressed(KeyEvent e) {
         int code = e.getKeyCode();
+        if (gp.currentState == GameState.Minimap) {
+            if (code == KeyEvent.VK_M || code == KeyEvent.VK_ESCAPE) {
+                gp.currentState = GameState.World;
+            }
+            return;
+        }
         if (gp.currentState == GameState.Alert) {
             if (code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
                 gp.currentState = GameState.World; // Kembalikan game ke normal
@@ -297,11 +313,78 @@ public class WorldManager {
             JOptionPane.showMessageDialog(gp, "CHEAT ACTIVATED GOLD +500");
             return;
         }
-        if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) { gp.playerDirection = 1; gp.isMoving = true; }
-        if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { gp.playerDirection = 0; gp.isMoving = true; }
-        if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) { gp.playerDirection = 2; gp.isMoving = true; }
-        if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) { gp.playerDirection = 3; gp.isMoving = true; }
-        if(code == KeyEvent.VK_ESCAPE || code == KeyEvent.VK_M) { gp.currentState = GameState.Menu; }
+        if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) {
+            gp.playerDirection = 1; 
+            gp.isMoving = true; 
+        }
+        if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) { 
+            gp.playerDirection = 0;
+            gp.isMoving = true; 
+        }
+        if(code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) { 
+            gp.playerDirection = 2; 
+            gp.isMoving = true; 
+        }
+        if(code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) { 
+            gp.playerDirection = 3; 
+            gp.isMoving = true;
+         }
+        if(code == KeyEvent.VK_ESCAPE){
+            gp.currentState = GameState.Menu;
+            return;
+        }
+        if(code == KeyEvent.VK_M) {
+            gp.currentState = GameState.Minimap;
+            return;
+        }
     }
+
+    public void drawMinimap(Graphics2D g2){
+        int size = 10;
+
+        int mapWidth = 60 * size;
+        int mapHeight = 40 * size;
+
+        int boxWidth = mapWidth + 20;
+        int boxHeight = mapHeight + 20;
+
+        // Kotak di tengah layar
+        int boxX = (Game.screenWidth - boxWidth) / 2;
+        int boxY = (Game.screenHeight - boxHeight) / 2;
+
+        // Posisi map di dalam kotak
+        int mapX = boxX + 10;
+        int mapY = boxY + 10;
+
+        g2.setColor(new Color(0,0,0,220));
+        g2.fillRoundRect(boxX, boxY, boxWidth, boxHeight, 20, 20);
+
+        for(int y=0;y<40;y++){
+            for(int x=0;x<60;x++){
+                switch(mapData[y][x]){
+                    case 0: g2.setColor(new Color(40,180,40)); break; // rumput
+                    case 1: g2.setColor(Color.GRAY); break;          // jalan
+                    case 2: g2.setColor(Color.BLUE); break;          // air
+                    case 3: g2.setColor(new Color(20,100,20)); break;// pohon
+                    case 4: g2.setColor(Color.DARK_GRAY); break;     // batu
+                    case 5: g2.setColor(Color.ORANGE); break;        // rumah
+                    case 6: g2.setColor(Color.YELLOW); break;        // waypoint
+                    case 7: g2.setColor(Color.RED); break;           // centre
+                }
+
+                g2.fillRect(mapX+x*size,mapY+y*size,size,size);
+            }
+        }
+
+        // Player
+        g2.setColor(Color.WHITE);
+        g2.fillOval( mapX+(gp.playerX/Game.tileSize)*size, mapY+(gp.playerY/Game.tileSize)*size, size,size);
+        drawStroke(g2,"Mini Map (M / ESC untuk keluar)",170,470,Color.WHITE);
+    }
+
+    public int[][] getMapData() {
+        return mapData;
+    }
+
     public void keyReleased(KeyEvent e) { gp.isMoving = false; }
 }

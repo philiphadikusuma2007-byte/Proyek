@@ -35,7 +35,7 @@ public class Battle {
             }
         }
         if (!hidup){
-            JOptionPane.showMessageDialog(gp, "❌ Semua monster kamu mati, pulihkan di Monster Centre terdekat!", "Peringatan Medis", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(gp, "❌ Semua Evomon kamu mati, pulihkan di Evomon Centre terdekat!", "Peringatan Medis", JOptionPane.WARNING_MESSAGE);
             gp.currentState = GameState.World;
             return;
         }
@@ -67,7 +67,7 @@ public class Battle {
         enemy.setLevel(playerActive.getLevel() + r.nextInt(3) - 1); // Level scaling dinamis
         if(enemy.getLevel() < 1) enemy.setLevel(1);
 
-        logs.add("⚔️ Monster Liar " + enemy.getName() + " (Lv." + enemy.getName() + ") Muncul!");
+        logs.add("⚔️ Evomon Liar " + enemy.getName() + " (Lv." + enemy.getName() + ") Muncul!");
         determineTurnOrder();
         gp.currentState = GameState.Battle;
         } catch (Exception e) {
@@ -149,10 +149,9 @@ public class Battle {
             }
             else if (enemy.getHp() <= 0) {
                 g2.drawString("⚔️ VICTORY ⚔️", 310, 150);
-                
                 g2.setFont(new Font("Monospaced", Font.BOLD, 18));
                 g2.setColor(Color.WHITE);
-                g2.drawString("Monster dikalahkan: " + enemy.getName(), 180, 210);
+                g2.drawString("Evomon dikalahkan: " + enemy.getName(), 180, 210);
                 g2.drawString("⭐ EXP Didapat      : +" + earnedXP + " EXP", 180, 250);
                 g2.drawString("💰 Gold Diperoleh  : +" + earnedGold + " Gold", 180, 290);
                 g2.drawString("📈 Status " + playerActive.getName() + "   : Lv." + playerActive.getLevel() + " (HP: " + playerActive.getHp() + "/" + playerActive.getMaxHp() + ")", 180, 330);
@@ -161,9 +160,8 @@ public class Battle {
                 g2.drawString("💀 DEFEAT 💀", 320, 150);
                 g2.setFont(new Font("Monospaced", Font.BOLD, 18));
                 g2.setColor(Color.WHITE);
-                g2.drawString("Semua monster aktifmu pingsan!", 210, 240);
+                g2.drawString("Semua Evomon aktifmu pingsan!", 210, 240);
             }
-
             g2.setFont(new Font("SansSerif", Font.ITALIC, 14));
             g2.setColor(Color.GRAY);
             g2.drawString("[ Tekan ENTER / SPASI untuk kembali ke Map ]", 250, 410);
@@ -228,7 +226,7 @@ public class Battle {
             } else if(subMenu == 3) {
                 Monsters monsterDipilih = gp.team.get(menuIndex);
                 if(monsterDipilih.getHp() <= 0) {
-                    JOptionPane.showMessageDialog(gp, "❌ Monster tersebut sudah pingsan! Pilih yang lain.");
+                    JOptionPane.showMessageDialog(gp, "❌ Evomon tersebut sudah pingsan! Pilih yang lain.");
                 } else {
                     playerActive = monsterDipilih;
                     logs.add("⚔️ Maju, " + playerActive.getName() + "! Balaskan dendam temanmu!");
@@ -260,7 +258,7 @@ public class Battle {
         }
         baseDmg = (int)(baseDmg * multiplier);
         enemy.takeDamage(baseDmg);
-        logs.add("🔥 " + playerActive.getName() + " melancarkan " + skill.getName() + "! " + baseDmg + " DMG terkoyak.");
+        logs.add("🔥 " + playerActive.getName() + " melancarkan " + skill.getName() + "! " + baseDmg + " DMG.");
         
         if(new Random().nextInt(100) < skill.getEffectChance()) {
             enemy.setCurrentStatus(skill.getEffect()); 
@@ -313,7 +311,8 @@ public class Battle {
             playerActive.gainExp(earnedXP, logs);
             gp.gold += earnedGold;
             logs.add("🏆 Musuh " + enemy.getName() + " Kalah!");
-            logs.add("💰 Anda mendapatkan " + earnedGold + " Gold!"); 
+            logs.add("💰 Anda mendapatkan " + earnedGold + " Gold!");
+            endBattleLater();
         } else if(playerActive.getHp() <= 0) {
             boolean hidup = false;
             for(Monsters m : gp.team) {
@@ -326,9 +325,9 @@ public class Battle {
                 selesai = true;
                 earnedXP = 0;
                 earnedGold = 0;
-                logs.add("💀 Semua monster aktifmu pingsan!");
+                logs.add("💀 Semua Evomon aktifmu pingsan!");
             } else {
-                logs.add("💀 " + playerActive.getName() + " pingsan! Pilih monstermu yang lain!");
+                logs.add("💀 " + playerActive.getName() + " pingsan! Pilih Evomonmu yang lain!");
                 subMenu = 3;
                 menuIndex = 0;
             }
@@ -337,7 +336,7 @@ public class Battle {
 
     private void endBattleLater() {
         Timer timer = new Timer(2000, e -> {
-            BGM.setVolume(-8f);   // kembalikan volume
+            BGM.setVolume(-32f);   // kembalikan volume
             gp.currentState = GameState.World;
         });
 
