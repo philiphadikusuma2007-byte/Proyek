@@ -11,7 +11,7 @@ import Game.*;
 import java.awt.event.*;
 import java.awt.*;
 
-public class GamePanel extends JPanel implements Runnable, KeyListener {
+public class GamePanel extends JPanel implements Runnable, KeyListener{
     private Thread gameThread;
     private boolean running = false;
 
@@ -44,6 +44,11 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     }
     
     private void initGameData() {
+        // Waypoints resmi map
+        waypoints.add(new Waypoints("Hutan", 30, 19));
+        waypoints.add(new Waypoints("Danau", 10, 25));
+        waypoints.add(new Waypoints("Desa", 54, 30));
+        
         worldManager = new WorldManager(this);
         battleEngine = new Battle(this);
         gachaEngine = new Gacha(this);
@@ -59,10 +64,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         inventory.add(new SuperPotion(2));
         inventory.add(new ReviveItem(1));
 
-        // Waypoints resmi map
-        waypoints.add(new Waypoints("Hutan", 30, 19));
-        waypoints.add(new Waypoints("Danau", 10, 25));
-        waypoints.add(new Waypoints("Desa", 54, 30));
     }
     
     public void startGame() {

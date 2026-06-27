@@ -6,6 +6,11 @@ import java.util.Random;
 import javax.swing.*;
 
 import Model.*;
+import Model.BattleActions.AttackAction;
+import Model.BattleActions.BattleAction;
+import Model.BattleActions.ItemAction;
+import Model.BattleActions.RunAction;
+import Model.BattleActions.SkillAction;
 import UI.GamePanel;
 import UI.Audio.*;
 import Util.AssetGenerator;
@@ -22,7 +27,8 @@ public class Battle {
     boolean isPlayerTurn = true;
     boolean escaped = false;
 
-    public Battle(GamePanel gp) { this.gp = gp; }
+    public Battle(GamePanel gp) { 
+        this.gp = gp; }
 
     public void startBattle() {
         try {
@@ -205,19 +211,24 @@ public class Battle {
         if(code == KeyEvent.VK_ESCAPE && subMenu != 0) { subMenu = 0; menuIndex = 0; return; }
         if(code == KeyEvent.VK_ENTER || code == KeyEvent.VK_SPACE) {
             if(subMenu == 0) {
-                if(menuIndex == 0) executeBasicAttack();
-                else if(menuIndex == 1) {
-                    subMenu = 1; 
-                    menuIndex = 0; 
+                BattleAction action = null;
+                switch(menuIndex){
+                    case 0:
+                        action = new AttackAction();
+                        break;
+                    case 1:
+                        action = new SkillAction();
+                        break;
+                    case 2:
+                        action = new ItemAction();
+                        break;
+                    case 3:
+                        action = new RunAction();
+                        break;
                 }
-                else if(menuIndex == 2) { 
-                    subMenu = 2; 
-                    menuIndex = 0; 
-                }
-                else if(menuIndex == 3) { 
-                    logs.add("🏃 Berhasil kabur dari pertarungan!"); 
-                    escaped = true;
-                    selesai = true;
+
+                if(action != null){
+                    action.execute(this);
                 }
             } else if(subMenu == 1) {
                 executeSkillAttack(playerActive.getSkills().get(menuIndex));
@@ -238,7 +249,7 @@ public class Battle {
         }
     }
 
-    private void executeBasicAttack() {
+    public void executeBasicAttack() {
         int damage = Math.max(1, playerActive.getAttack() - enemy.getDefense()/2);
         enemy.setHp(enemy.getHp() - damage);
         if(enemy.getHp() < 0) enemy.setHp(0);
@@ -247,7 +258,7 @@ public class Battle {
         if(enemy.getHp() > 0) executeEnemyTurn();
     }
 
-    private void executeSkillAttack(Skills skill) {
+    public void executeSkillAttack(Skills skill) {
         int baseDmg = Math.max(1, (playerActive.getAttack() + skill.getPower()) - enemy.getDefense()/2);
         double multiplier = skill.getElement().getMultiplier(enemy.getElement());
         if(multiplier > 1.0){
@@ -270,7 +281,7 @@ public class Battle {
         if(enemy.getHp() > 0) executeEnemyTurn();
     }
 
-    private void useBattleItem(Items it) {
+    public void useBattleItem(Items it) {
         if(it.getQty() <= 0) { 
             logs.add("Item habis!"); 
             return; 
@@ -342,5 +353,25 @@ public class Battle {
 
         timer.setRepeats(false);
         timer.start();
+    }
+
+    public void openSkillMenu() {
+        subMenu = 1;
+        menuIndex = 0;
+    }
+
+    public void openItemMenu() {
+        subMenu = 2;
+        menuIndex = 0;
+    }
+
+    public void runBattle() {
+        logs.add("🏃 Berhasil kabur dari pertarungan!");
+        escaped = true;
+        selesai = true;
+    }
+
+    public void mouseClicked(MouseEvent e){
+
     }
 }

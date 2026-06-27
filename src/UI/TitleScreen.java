@@ -4,7 +4,7 @@ import Game.Game;
 import Game.GameState;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -138,10 +138,7 @@ public class TitleScreen {
     }
 
     private void drawBackground(Graphics2D g2) {
-        GradientPaint gp2 = new GradientPaint(
-            0, 0,                BG_TOP,
-            0, Game.screenHeight, BG_BOTTOM
-        );
+        GradientPaint gp2 = new GradientPaint(0, 0, BG_TOP, 0, Game.screenHeight, BG_BOTTOM);
         g2.setPaint(gp2);
         g2.fillRect(0, 0, Game.screenWidth, Game.screenHeight);
     }
@@ -232,7 +229,7 @@ public class TitleScreen {
             // Arrow cursor
             if (isSelected) {
                 g2.setColor(SEL_COLOR);
-                int[] ax = { itemX - 30, itemX - 15, itemX - 15 };
+                int[] ax = { itemX - 30, itemX - 45, itemX - 45 };
                 int[] ay = { itemY[i] - 10, itemY[i] - 18, itemY[i] - 2 };
                 g2.fillPolygon(ax, ay, 3);
             }
@@ -242,7 +239,7 @@ public class TitleScreen {
     private void drawVersion(Graphics2D g2) {
         g2.setFont(FONT_VER);
         g2.setColor(new Color(100, 100, 130));
-        g2.drawString("© 2025 EVOMON STUDIOS", 24, Game.screenHeight - 24);
+        g2.drawString("© 2026 EVOMON STUDIOS", 24, Game.screenHeight - 24);
     }
 
     // ══════════════════════════════════════════════════════════════════════════

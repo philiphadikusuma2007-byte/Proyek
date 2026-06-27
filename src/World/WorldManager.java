@@ -31,6 +31,7 @@ public class WorldManager {
         loadTiles();
         generateProceduralMapFile();
         loadMapFile();
+        syncWaypointTiles();
     }
 
     private void loadTiles() {
@@ -368,5 +369,16 @@ public class WorldManager {
         return mapData;
     }
 
-    public void keyReleased(KeyEvent e) { gp.isMoving = false; }
+    public void keyReleased(KeyEvent e) { 
+        gp.isMoving = false; 
+    }
+
+    private void syncWaypointTiles() {
+        for (Waypoints wp : gp.waypoints) {
+            int wx = wp.getX(), wy = wp.getY();
+            if (wy >= 0 && wy < mapData.length && wx >= 0 && wx < mapData[0].length) {
+                mapData[wy][wx] = 6;
+            }
+        }
+    }
 }

@@ -24,9 +24,12 @@ public class MenuManager {
     int sectionIndex = 0; // 0: Utama, 1: Inventory, 2: Fast Travel, 3: Koleksi Monster
     int selectIdx = 0;
     boolean gantiMonsters = false;
-    public MenuManager(GamePanel gp) { this.gp = gp; }
     boolean targetEquip = false;
     Items itemDiequip = null;
+    
+    public MenuManager(GamePanel gp) { 
+        this.gp = gp; 
+    }
 
     public void draw(Graphics2D g2) {
         g2.setColor(new Color(20, 20, 30));
@@ -264,7 +267,7 @@ public class MenuManager {
     }
 
     private void saveGame() {
-    File f = new File("assets/saves/save_game.txt");
+    File f = new File("assets/saves/save_game.dat");
     try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
             // 1. Status Dasar Player
             bw.write(gp.playerX + "\n");
@@ -283,7 +286,7 @@ public class MenuManager {
             // 4. Data Koleksi Monster Gudang (Storage)
             bw.write(gp.storage.size() + "\n");
             for (Monsters m : gp.storage) {
-                bw.write(m.getName() + "," + m.getLevel() + "," + m.getHp() + "," + m.getMaxExp() + "," +  m.getAttack() + "," + m.getDefense() + "," + m.getSpeed() + "\n");
+                bw.write(m.getName() + "," + m.getLevel() + "," + m.getHp() + "," + m.getMaxHp() +  "," +  m.getAttack() + "," + m.getDefense() + "," + m.getSpeed() +  "," + m.getExp() + ","  + m.getMaxExp() + "\n");
             }
             // 5. Data Team Aktif
             bw.write(gp.team.size() + "\n");
@@ -298,12 +301,12 @@ public class MenuManager {
     }
 
     @SuppressWarnings("unchecked")
-    private void loadGame() {
-    File f = new File("assets/saves/save_game.txt");
-    if (!f.exists()) {
-        JOptionPane.showMessageDialog(gp, "❌ File save-an tidak ditemukan!");
-        return;
-    }try (BufferedReader br = new BufferedReader(new FileReader(f))) {
+        private void loadGame() {
+        File f = new File("assets/saves/save_game.dat");
+        if (!f.exists()) {
+            JOptionPane.showMessageDialog(gp, "❌ File save-an tidak ditemukan!");
+            return;
+        }try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             // 1. Status Dasar Player
             gp.playerX = Integer.parseInt(br.readLine());
             gp.playerY = Integer.parseInt(br.readLine());
@@ -325,7 +328,7 @@ public class MenuManager {
                         gp.inventory.add(new SuperPotion(qty));
                         break;
 
-                    case "REVIVE":
+                    case "REVIVE_ITEM":
                         gp.inventory.add(new ReviveItem(qty));
                         break;
                 }
@@ -378,10 +381,10 @@ public class MenuManager {
             sectionIndex = 0;
             selectIdx = 0;
             gp.currentState = GameState.World; 
-            JOptionPane.showMessageDialog(gp, "📂 Berhasil memuat data permainan dari saves.txt!");
+            JOptionPane.showMessageDialog(gp, "📂 Berhasil memuat data permainan dari save_game.dat!");
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(gp, "❌ File saves.txt lama tidak cocok atau rusak. Silakan main dan Save ulang!");
+            JOptionPane.showMessageDialog(gp, "❌ File save_game.dat lama tidak cocok atau rusak. Silakan main dan Save ulang!");
         }
     }
 
