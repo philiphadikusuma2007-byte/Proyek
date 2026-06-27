@@ -16,11 +16,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     private boolean running = false;
 
     //state
-    public GameState currentState = GameState.World;
+    public GameState currentState = GameState.Title; // <-- starts at Title now
     public WorldManager worldManager;
     public Battle battleEngine;
     public Gacha gachaEngine;
     public MenuManager menuManager;
+    public TitleScreen titleScreen; // <-- added
     
     // Player Data
     public int gold = 100;
@@ -38,6 +39,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(this);
+        titleScreen = new TitleScreen(this); // <-- added
         initGameData();
     }
     
@@ -90,7 +92,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     }
 
     private void update() {
-        if (currentState == GameState.World) worldManager.update();
+        if (currentState == GameState.Title) titleScreen.update(); // <-- added
+        else if (currentState == GameState.World) worldManager.update();
         else if (currentState == GameState.Battle) battleEngine.update();
     }
 
@@ -99,7 +102,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         
-        if (currentState == GameState.World) worldManager.draw(g2);
+        if (currentState == GameState.Title) titleScreen.draw(g2); // <-- added
+        else if (currentState == GameState.World) worldManager.draw(g2);
         else if (currentState == GameState.Alert) worldManager.draw(g2);
         else if (currentState == GameState.Battle) {
             battleEngine.draw(g2);
@@ -121,7 +125,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     // Key Listener delegation
     @Override public void keyPressed(KeyEvent e) {
-        if(currentState == GameState.World) worldManager.keyPressed(e);
+        if(currentState == GameState.Title) titleScreen.keyPressed(e); // <-- added
+        else if(currentState == GameState.World) worldManager.keyPressed(e);
         else if(currentState == GameState.Alert) worldManager.keyPressed(e);
         else if(currentState == GameState.Battle) battleEngine.keyPressed(e);
         else if(currentState == GameState.Gacha) gachaEngine.keyPressed(e);

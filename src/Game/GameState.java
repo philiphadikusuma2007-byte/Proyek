@@ -1,2 +1,2 @@
 package Game;
-public enum GameState{World, Battle, Gacha, Menu, Shop, Alert, Minimap}
+public enum GameState{Title, World, Battle, Gacha, Menu, Shop, Alert, Minimap}
