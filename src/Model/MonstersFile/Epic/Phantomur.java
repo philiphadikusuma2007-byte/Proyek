@@ -1,11 +1,12 @@
 package Model.MonstersFile.Epic;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class Phantomur extends Monsters {
 
     public Phantomur() {
-        super("Phantomur", Element.Grass, Rarity.Epic, 165, 37, 28, 34);
+        super("Phantomur", new Grass(), Rarity.Epic, 165, 37, 28, 34);
     }
 
     @Override

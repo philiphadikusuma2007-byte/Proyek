@@ -1,11 +1,12 @@
 package Model.MonstersFile.Common;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class Sparky extends Monsters {
 
     public Sparky() {
-        super("Sparky", Element.Electric, Rarity.Common, 70, 16, 9, 16);
+        super("Sparky", new Electric(), Rarity.Common, 70, 16, 9, 16);
     }
 
     @Override

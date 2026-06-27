@@ -286,10 +286,7 @@ public class MenuManager {
             // 4. Data Koleksi Monster Gudang (Storage)
             bw.write(gp.storage.size() + "\n");
             for (Monsters m : gp.storage) {
-                // 🌟 UPDATE: Ditambahkan m.element.name() ke dalam baris save
-                bw.write(m.getName() + "," + m.getElement().name() + "," + m.getRarity().name() + "," + 
-                         m.getLevel() + "," + m.getHp() + "," + m.getMaxExp() + "," + 
-                         m.getAttack() + "," + m.getDefense() + "," + m.getSpeed() + "\n");
+                bw.write(m.getName() + "," + m.getLevel() + "," + m.getHp() + "," + m.getMaxExp() + "," +  m.getAttack() + "," + m.getDefense() + "," + m.getSpeed() + "\n");
             }
             // 5. Data Team Aktif
             bw.write(gp.team.size() + "\n");
@@ -351,18 +348,27 @@ public class MenuManager {
             for (int i = 0; i < totalStorage; i++) {
                 String[] dataMon = br.readLine().split(",");
                 String name = dataMon[0];
-                Element element = Element.valueOf(dataMon[1]);
-                Rarity rarity = Rarity.valueOf(dataMon[2]);
-                int level = Integer.parseInt(dataMon[3]);
-                int hp = Integer.parseInt(dataMon[4]);
-                int maxHp = Integer.parseInt(dataMon[5]);
-                int attack = Integer.parseInt(dataMon[6]);
-                int defense = Integer.parseInt(dataMon[7]);
-                int speed = Integer.parseInt(dataMon[8]);
-                Monsters m = new Monsters(name, element, rarity, maxHp, attack, defense, speed);
-                m.setLevel(m.getLevel());
-                m.setHp(m.getHp());
-                gp.storage.add(m);
+                int level = Integer.parseInt(dataMon[1]);
+                int hp = Integer.parseInt(dataMon[2]);
+                int maxHp = Integer.parseInt(dataMon[3]);
+                int attack = Integer.parseInt(dataMon[4]);
+                int defense = Integer.parseInt(dataMon[5]);
+                int speed = Integer.parseInt(dataMon[6]);
+                int exp = Integer.parseInt(dataMon[7]);
+                int maxExp = Integer.parseInt(dataMon[8]);
+                Monsters m = AssetGenerator.getMonsterByName(name);
+                if (m != null) {
+                    m.setLevel(level);
+                    m.setHp(hp);
+                    m.setMaxHp(maxHp);
+                    m.setAttack(attack);
+                    m.setDefense(defense);
+                    m.setSpeed(speed);
+                    m.setExp(exp);
+                    m.setMaxExp(maxExp);
+
+                    gp.storage.add(m);
+                }
             }
             // 5. Data Team Aktif
             gp.team.clear();

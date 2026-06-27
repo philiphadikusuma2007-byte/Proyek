@@ -1,10 +1,11 @@
 package Model.SkillsFile;
 import Model.*;
 import Model.StatusEffectFile.*;
+import Model.ElementsFile.*;
 
 public class LightningStorm extends AttackSkill{
     
     public LightningStorm(){
-        super("Lightning Storm", Element.Electric, 80, new Stun(), 45);
+        super("Lightning Storm", new Electric(), 80, new Stun(), 45);
     }
 }

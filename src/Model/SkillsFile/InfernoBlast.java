@@ -1,10 +1,11 @@
 package Model.SkillsFile;
 import Model.*;
 import Model.StatusEffectFile.*;
+import Model.ElementsFile.*;
 
 public class InfernoBlast extends AttackSkill{
     
     public InfernoBlast(){
-        super("Inferno Blast", Element.Fire, 75, new Burn(), 50);
+        super("Inferno Blast", new Fire(), 75, new Burn(), 50);
     }
 }

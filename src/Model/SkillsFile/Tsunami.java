@@ -1,10 +1,11 @@
 package Model.SkillsFile;
 import Model.*;
 import Model.StatusEffectFile.*;
+import Model.ElementsFile.*;
 
 public class Tsunami extends AttackSkill{
     
     public Tsunami(){
-        super("Tsunami", Element.Water, 75, new Freeze(), 40);
+        super("Tsunami", new Water(), 75, new Freeze(), 40);
     }
 }

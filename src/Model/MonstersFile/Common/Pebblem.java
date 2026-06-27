@@ -2,11 +2,12 @@ package Model.MonstersFile.Common;
 
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class Pebblem extends Monsters {
 
     public Pebblem() {
-        super("Pebblem", Element.Earth, Rarity.Common, 100, 12, 18, 5);
+        super("Pebblem", new Earth(), Rarity.Common, 100, 12, 18, 5);
     }
 
     @Override

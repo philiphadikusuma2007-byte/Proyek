@@ -14,6 +14,7 @@ import javax.swing.*;
 
 import Game.*;
 import Model.*;
+import Model.StatusEffectFile.*;
 import UI.GamePanel;
 import UI.Audio.Sound;
 
@@ -101,7 +102,7 @@ public class WorldManager {
                         // Loop semua monster di tim player untuk memulihkan HP
                         for (Monsters m : gp.team) {
                             m.setHp(m.getMaxHp());
-                            m.setCurrentStatus(StatusEffect.None); // Sembuhkan juga efek status buruk jika ada
+                            m.setCurrentStatus(new None()); // Sembuhkan juga efek status buruk jika ada
                         }
                         Sound.playSound("assets/sounds/healing.wav");
 

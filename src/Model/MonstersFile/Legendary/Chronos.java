@@ -1,10 +1,12 @@
 package Model.MonstersFile.Legendary;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
+
 public class Chronos extends Monsters {
 
     public Chronos() {
-        super("Chronos", Element.Wind, Rarity.Legendary, 220, 52, 45, 48);
+        super("Chronos", new Wind(), Rarity.Legendary, 220, 52, 45, 48);
     }
 
     @Override

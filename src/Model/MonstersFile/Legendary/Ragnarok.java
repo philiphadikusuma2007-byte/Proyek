@@ -1,11 +1,12 @@
 package Model.MonstersFile.Legendary;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class Ragnarok extends Monsters {
 
     public Ragnarok() {
-        super("Ragnarok", Element.Dark, Rarity.Legendary, 250, 60, 38, 42);
+        super("Ragnarok", new Dark(), Rarity.Legendary, 250, 60, 38, 42);
     }
 
     @Override

@@ -1,11 +1,12 @@
 package Model.MonstersFile.Epic;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class HydroShell extends Monsters {
 
     public HydroShell() {
-        super("HydroShell", Element.Water, Rarity.Epic, 185, 34, 35, 20);
+        super("HydroShell", new Water(), Rarity.Epic, 185, 34, 35, 20);
     }
 
     @Override

@@ -1,10 +1,12 @@
 package Model.MonstersFile.Epic;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
+
 public class Stormbird extends Monsters {
 
     public Stormbird() {
-        super("Stormbird", Element.Electric, Rarity.Epic, 155, 38, 24, 40);
+        super("Stormbird", new Electric(), Rarity.Epic, 155, 38, 24, 40);
     }
 
     @Override

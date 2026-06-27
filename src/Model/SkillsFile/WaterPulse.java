@@ -1,10 +1,11 @@
 package Model.SkillsFile;
 import Model.*;
 import Model.StatusEffectFile.*;
+import Model.ElementsFile.*;
 
 public class WaterPulse extends AttackSkill{
     
     public WaterPulse(){
-        super("Water Pulse", Element.Water, 60, new Freeze(), 35);
+        super("Water Pulse", new Water(), 60, new Freeze(), 35);
     }
 }

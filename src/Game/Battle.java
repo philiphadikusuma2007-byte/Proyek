@@ -249,16 +249,23 @@ public class Battle {
         if(enemy.getHp() > 0) executeEnemyTurn();
     }
 
-    private void executeSkillAttack(Skills sk) {
-        int baseDmg = Math.max(1, (playerActive.getAttack() + sk.getPower()) - enemy.getDefense()/2);
-        enemy.setHp(enemy.getHp() - baseDmg);
-        if(enemy.getHp() < 0) enemy.setHp(0);
-        logs.add("🔥 " + playerActive.getName() + " melancarkan " + sk.getName() + "! " + baseDmg + " DMG terkoyak.");
+    private void executeSkillAttack(Skills skill) {
+        int baseDmg = Math.max(1, (playerActive.getAttack() + skill.getPower()) - enemy.getDefense()/2);
+        double multiplier = skill.getElement().getMultiplier(enemy.getElement());
+        if(multiplier > 1.0){
+            logs.add("🔥 It's Super Effective!");
+        }
+        else if(multiplier < 1.0){
+            logs.add("😓 It's Not Very Effective...");
+        }
+        baseDmg = (int)(baseDmg * multiplier);
+        enemy.takeDamage(baseDmg);
+        logs.add("🔥 " + playerActive.getName() + " melancarkan " + skill.getName() + "! " + baseDmg + " DMG terkoyak.");
         
-        if(new Random().nextInt(100) < sk.getEffectChance()) {
-            enemy.setCurrentStatus(sk.getEffect()); 
+        if(new Random().nextInt(100) < skill.getEffectChance()) {
+            enemy.setCurrentStatus(skill.getEffect()); 
             enemy.setStatusDuration(3);
-            logs.add("💥 Efek Status Terinfeksi: " + sk.getEffect());
+            logs.add("💥 Efek Status Terinfeksi: " + skill.getEffect());
         }
         subMenu = 0; menuIndex = 0;
         checkBattleStatus();

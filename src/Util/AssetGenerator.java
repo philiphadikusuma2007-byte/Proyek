@@ -112,6 +112,15 @@ public class AssetGenerator {
         allMonsters.add(new Genesis());
     }
 
+    public static Monsters getMonsterByName(String name) {
+    for (Monsters m : allMonsters) {
+        if (m.getName().equalsIgnoreCase(name)) {
+            return m.cloneMonster();
+        }
+    }
+    return null;
+}
+
     public static BufferedImage getMonstersImage(String name) {
         return imgCache.get(name);
     }

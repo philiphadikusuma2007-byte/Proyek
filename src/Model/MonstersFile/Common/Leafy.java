@@ -1,10 +1,11 @@
 package Model.MonstersFile.Common;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class Leafy extends Monsters{
     public Leafy() {
-        super("Leafy" ,Element.Grass, Rarity.Common, 80, 15, 12, 10);
+        super("Leafy" ,new Grass(), Rarity.Common, 80, 15, 12, 10);
     }
 
     @Override

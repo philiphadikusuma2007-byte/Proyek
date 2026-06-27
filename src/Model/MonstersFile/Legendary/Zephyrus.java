@@ -1,11 +1,12 @@
 package Model.MonstersFile.Legendary;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class Zephyrus extends Monsters {
 
     public Zephyrus() {
-        super("Zephyrus", Element.Wind, Rarity.Legendary, 210, 55, 40, 55);
+        super("Zephyrus", new Wind(), Rarity.Legendary, 210, 55, 40, 55);
     }
 
     @Override

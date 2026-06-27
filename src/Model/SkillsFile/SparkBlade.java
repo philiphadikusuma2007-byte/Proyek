@@ -1,11 +1,12 @@
 package Model.SkillsFile;
 import Model.*;
 import Model.StatusEffectFile.*;
+import Model.ElementsFile.*;
 
 public class SparkBlade extends AttackSkill{
 
     public SparkBlade(){
-        super("Spark Blade",  Element.Electric, 50, new None(), 0);
+        super("Spark Blade",  new Electric(), 50, new None(), 0);
     }
     
 }

@@ -2,6 +2,14 @@ package Model;
 import java.io.Serializable;
 import java.util.*;
 
+import Model.ElementsFile.Dark;
+import Model.ElementsFile.Earth;
+import Model.ElementsFile.Electric;
+import Model.ElementsFile.Fire;
+import Model.ElementsFile.Grass;
+import Model.ElementsFile.Light;
+import Model.ElementsFile.Water;
+import Model.ElementsFile.Wind;
 import Model.SkillsFile.*;
 import Model.StatusEffectFile.*;
 
@@ -46,22 +54,16 @@ public class Monsters extends Character implements Serializable{
 
     protected void initDefaultSkills() {
         skills.add(new Tackle());
-        switch(element) {
-            case Fire: 
-                skills.add(new Ember());
-                break;
-            case Water: 
-                skills.add(new WaterGun());
-                break;
-            case Grass: 
-                skills.add(new VineWhip());
-                break;
-            case Electric: 
-                skills.add(new ThunderShock());
-                break;
-            default: 
-                skills.add(new Earthquake());
-                break;
+        if (element instanceof Fire) {
+            skills.add(new Ember());
+        } else if (element instanceof Water) {
+            skills.add(new WaterGun());
+        } else if (element instanceof Grass) {
+            skills.add(new VineWhip());
+        } else if (element instanceof Electric) {
+            skills.add(new ThunderShock());
+        } else if (element instanceof Earth) {
+            skills.add(new Earthquake());
         }
     }
     
@@ -73,7 +75,9 @@ public class Monsters extends Character implements Serializable{
             level++;
             maxExp = (int)(maxExp * 1.5);
             maxHp += 10; hp = maxHp;
-            attack += 3; defense += 2; speed += 2;
+            attack += 3; 
+            defense += 2; 
+            speed += 2;
             logs.add("⭐ " + name + " NAIK LEVEL ke " + level + "! Stat meningkat!");
         }
     }

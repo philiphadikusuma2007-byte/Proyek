@@ -1,11 +1,12 @@
 package Model.MonstersFile.Common;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class Pyropup extends Monsters {
 
     public Pyropup() {
-        super("Pyroup", Element.Fire, Rarity.Common, 75, 18, 10, 12 );
+        super("Pyroup", new Fire(), Rarity.Common, 75, 18, 10, 12 );
     }
 
     @Override

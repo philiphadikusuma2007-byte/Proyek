@@ -1,11 +1,12 @@
 package Model.MonstersFile.Rare;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class Aquafox extends Monsters {
 
     public Aquafox() {
-        super("Aquafox", Element.Water, Rarity.Rare, 125, 20, 22, 14);
+        super("Aquafox", new Water(), Rarity.Rare, 125, 20, 22, 14);
     }
 
     @Override

@@ -1,10 +1,11 @@
 package Model.SkillsFile;
 import Model.*;
 import Model.StatusEffectFile.*;
+import Model.ElementsFile.*;
 
 public class Tackle extends AttackSkill{
     
     public Tackle() {
-        super( "Tackle", Element.Earth, 35, new None(), 0);
+        super( "Tackle", new Earth(), 35, new None(), 0);
     }
 }

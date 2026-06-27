@@ -1,11 +1,12 @@
 package Model.MonstersFile.Rare;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class Granite extends Monsters {
 
     public Granite() {
-        super("Granite", Element.Earth, Rarity.Rare, 140, 18, 26, 10);
+        super("Granite", new Earth(), Rarity.Rare, 140, 18, 26, 10);
     }
 
     @Override

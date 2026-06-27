@@ -1,11 +1,12 @@
 package Model.MonstersFile.Rare;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class Embercat extends Monsters {
 
     public Embercat() {
-        super("Embercat", Element.Fire, Rarity.Rare, 105, 26, 16, 20);
+        super("Embercat", new Fire(), Rarity.Rare, 105, 26, 16, 20);
     }
 
     @Override

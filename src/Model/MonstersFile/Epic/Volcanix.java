@@ -1,11 +1,12 @@
 package Model.MonstersFile.Epic;
 import Model.*;
 import Model.SkillsFile.*;
+import Model.ElementsFile.*;
 
 public class Volcanix extends Monsters {
 
     public Volcanix() {
-        super("Volcanix", Element.Fire, Rarity.Epic, 160, 40, 25, 30);
+        super("Volcanix", new Fire(), Rarity.Epic, 160, 40, 25, 30);
     }
 
     @Override
