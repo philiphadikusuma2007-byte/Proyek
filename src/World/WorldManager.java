@@ -22,7 +22,7 @@ public class WorldManager {
     GamePanel gp;
     int[][] mapData = new int[40][60];
     BufferedImage[] tileImages = new BufferedImage[15]; // 0:Grass, 1:Road, 2:Water, 3:Tree, 4:Rock, 5:House, 6:Waypoint
-    BufferedImage playerSpriteSheet;
+    BufferedImage[][] playerFrames = new BufferedImage[4][4];
     int animFrame = 0, animTimer = 0;
     String alertMessage = "";
 
@@ -43,7 +43,12 @@ public class WorldManager {
             tileImages[5] = ImageIO.read(new File("assets/tiles/house.png"));
             tileImages[6] = ImageIO.read(new File("assets/tiles/waypoint.png"));
             tileImages[7] = ImageIO.read(new File("assets/tiles/pokemoncentre.png"));
-            playerSpriteSheet = ImageIO.read(new File("assets/player/player.png"));
+            String[] dirFolders = {"down", "up", "left", "right"};
+            for (int dir = 0; dir < 4; dir++) {
+                for (int f = 0; f < 4; f++) {
+                    playerFrames[dir][f] = ImageIO.read(new File("assets/player/" + dirFolders[dir] + "/" + f + ".png"));
+                }
+            }
         } catch(Exception e) { e.printStackTrace(); }
     }
 
@@ -203,37 +208,14 @@ public class WorldManager {
         }
 
         // Render Player sub-image sprite sheet (Row: arah, Col: frame)
-        int spriteSize = 135;
-        int targetRow = 0;
-        boolean flipX = false;
-        if (gp.playerDirection == 0) targetRow = 0; // Bawah -> Baris 1
-        if (gp.playerDirection == 1) targetRow = 1; // Atas -> Baris 2
-        if (gp.playerDirection == 3) targetRow = 2; // Kanan -> Baris 3
-        if (gp.playerDirection == 2) { 
-            targetRow = 2; // Kiri -> Tetap ambil Baris 3 (Hadap Kanan), tapi nanti kita balik gambarnya
-            flipX = true; 
-        }
-        int sx = animFrame * spriteSize;
-        int sy = gp.playerDirection * spriteSize;
+        // Render Player dari frame-frame terpisah (per arah & per frame)
+        BufferedImage currentFrame = playerFrames[gp.playerDirection][animFrame];
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         int drawSize = 48; 
         int screenX = Game.screenWidth / 2;
         int selisihTinggi = drawSize - Game.tileSize;
         int screenY = (Game.screenHeight / 2) - selisihTinggi;
-
-        if (flipX) {
-            // Menggambar terbalik (Kanan jadi Kiri) jika player berjalan ke kiri
-            g2.drawImage(playerSpriteSheet, 
-                         screenX - (drawSize/2) + drawSize, screenY - (drawSize/2), 
-                         screenX - (drawSize/2), screenY - (drawSize/2) + drawSize, 
-                         sx, sy, sx + spriteSize, sy + spriteSize, null);
-        } else {
-            // Menggambar normal untuk arah atas, bawah, dan kanan
-            g2.drawImage(playerSpriteSheet, 
-                         screenX - (drawSize/2), screenY - (drawSize/2), 
-                         screenX - (drawSize/2) + drawSize, screenY - (drawSize/2) + drawSize, 
-                         sx, sy, sx + spriteSize, sy + spriteSize, null);
-        }
+        g2.drawImage(currentFrame,  screenX - (drawSize/2), screenY - (drawSize/2), drawSize, drawSize, null);
 
         // GUI Overlay Ringkas petunjuk
         Font fontBesar = new Font("Sans Serif", Font.BOLD, 18);
