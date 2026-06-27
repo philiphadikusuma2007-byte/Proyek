@@ -7,9 +7,9 @@ import javax.swing.*;
 
 import Model.*;
 import UI.GamePanel;
-import UI.Audio.BGM;
-import UI.Audio.Sound;
+import UI.Audio.*;
 import Util.AssetGenerator;
+import Model.StatusEffectFile.*;
 
 public class Battle {
     GamePanel gp;
@@ -180,7 +180,7 @@ public class Battle {
         g2.fillRect(x, y+8, (int)(150 * hpRatio), 10);
         g2.setColor(Color.WHITE);
         g2.drawRect(x, y+8, 150, 10);
-        g2.drawString(m.getHp() + "/" + m.getMaxHp() + " STATUS: " + m.getCurrentStatus().name(), x, y+32);
+        g2.drawString(m.getHp() + "/" + m.getMaxHp() + " STATUS: " + m.getCurrentStatus().getName(), x, y+32);
     }
 
     public void keyPressed(KeyEvent e) {
@@ -279,19 +279,22 @@ public class Battle {
 
     private void executeEnemyTurn() {
         if(enemy.getHp() <= 0) return;
+        StatusEffect status = enemy.getCurrentStatus();
+        status.applyEffect(enemy);
         // Efek Status Check Musuh
-        if(enemy.getCurrentStatus() == StatusEffect.Stun || enemy.getCurrentStatus() == StatusEffect.Freeze) {
+        if(!status.canMove()) {
             logs.add("❄️ " + enemy.getName() + " tidak bisa bergerak karena status " + enemy.getCurrentStatus());
-            enemy.setStatusDuration(enemy.getStatusDuration() - 1); 
-            if(enemy.getStatusDuration() <= 0) enemy.setCurrentStatus(StatusEffect.None);
+            status.decreaseDuration();
+            if(status.isFinished()){
+                enemy.setCurrentStatus(new None());
+            }
+            checkBattleStatus();
             return;
         }
 
         int edmg = Math.max(1, enemy.getAttack() - playerActive.getDefense()/2);
-        playerActive.setHp(playerActive.getHp() - edmg);
-        if(playerActive.getHp() < 0) playerActive.setHp(0);
+        playerActive.takeDamage(edmg);
         logs.add("💥 " + enemy.getName() + " membalas menyerang, memberi " + edmg + " DMG!");
-
         checkBattleStatus();
     }
 

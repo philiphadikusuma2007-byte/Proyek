@@ -1,9 +1,10 @@
 package Model.SkillsFile;
 import Model.*;
+import Model.StatusEffectFile.*;
 
 public class DivineJudgement extends AttackSkill{
     
     public DivineJudgement(){
-        super( "Divine Judgment", Element.Light, 95, StatusEffect.Def_Buff, 100);
+        super( "Divine Judgment", Element.Light, 95, new DeffBuff(), 100);
     }
 }

@@ -11,7 +11,7 @@ public class HydroShell extends Monsters {
     @Override
     protected void initDefaultSkills() {
         skills.clear();
-        skills.add(new SmallBash());
+        skills.add(new ShellBash());
         skills.add(new Tsunami());
     }
 

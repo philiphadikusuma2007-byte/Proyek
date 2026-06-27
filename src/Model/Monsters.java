@@ -3,10 +3,11 @@ import java.io.Serializable;
 import java.util.*;
 
 import Model.SkillsFile.*;
+import Model.StatusEffectFile.*;
 
 public class Monsters extends Character implements Serializable{
     Rarity rarity;
-    StatusEffect currentStatus = StatusEffect.None;
+    private StatusEffect currentStatus = new None();
     int statusDuration = 0;
     public Items equip = null;
     boolean targetEquip = false;
@@ -27,7 +28,7 @@ public class Monsters extends Character implements Serializable{
     }
 
     public void setCurrentStatus(StatusEffect status) {
-        this.currentStatus = status;
+        currentStatus = status;
     }
 
     public int getStatusDuration() {
@@ -35,7 +36,7 @@ public class Monsters extends Character implements Serializable{
     }
 
     public void setStatusDuration(int duration) {
-        this.statusDuration = duration;
+        statusDuration = duration;
     }
     
     @Override
