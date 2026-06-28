@@ -13,7 +13,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Random;
-import javax.swing.*;
+import javax.swing.*; 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class Battle {
     GamePanel gp;
@@ -25,9 +29,17 @@ public class Battle {
     int menuIndex = 0, subMenu = 0; // 0: Main, 1: Skill, 2: Item
     boolean isPlayerTurn = true;
     boolean escaped = false;
+    private BufferedImage battleBackground;
 
     public Battle(GamePanel gp) { 
-        this.gp = gp; }
+        this.gp = gp;
+        try {
+            battleBackground = ImageIO.read(new File("assets/background/background.png"));
+        } catch (IOException e) {
+            System.err.println("⚠️ Gagal memuat background battle: " + e.getMessage());
+            battleBackground = null;
+        }
+    }
 
     public void startBattle() {
         try {
@@ -91,9 +103,13 @@ public class Battle {
 
     public void draw(Graphics2D g2) {
         // Background temp arena
-        g2.setColor(new Color(30, 40, 60));
-        g2.fillRect(0, 0, Game.screenWidth, Game.screenHeight);
-
+        if (battleBackground != null) {
+            g2.drawImage(battleBackground, 0, 0, Game.screenWidth, Game.screenHeight, null);
+        } else {
+            // Fallback warna jika gambar tidak ditemukan
+            g2.setColor(new Color(30, 40, 60));
+            g2.fillRect(0, 0, Game.screenWidth, Game.screenHeight);
+        }
         // Render Showcase Musuh (Kanan Atas)
         g2.drawImage(AssetGenerator.getMonstersImage(enemy.getName()), 500, 80, 160, 160, null);
         drawStatusBar(g2, enemy, 500, 40);
