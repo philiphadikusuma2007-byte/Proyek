@@ -111,12 +111,14 @@ public class Battle {
             g2.fillRect(0, 0, Game.screenWidth, Game.screenHeight);
         }
         // Render Showcase Musuh (Kanan Atas)
-        g2.drawImage(AssetGenerator.getMonstersImage(enemy.getName()), 500, 80, 160, 160, null);
-        drawStatusBar(g2, enemy, 500, 40);
+        int enemyX = 474, enemyY = 250;
+        g2.drawImage(AssetGenerator.getMonstersImage(enemy.getName()), enemyX, enemyY, 120, 120, null);
+        drawStatusBar(g2, enemy, enemyX, enemyY - 40);
 
         // Render Player Monster (Kiri Bawah)
-        g2.drawImage(AssetGenerator.getMonstersImage(playerActive.getName()), 100, 240, 160, 160, null);
-        drawStatusBar(g2, playerActive, 100, 200);
+        int playerX = 185, playerY = 295;
+        g2.drawImage(AssetGenerator.getMonstersImage(playerActive.getName()), playerX, playerY, 120, 120, null);
+        drawStatusBar(g2, playerActive, playerX, playerY - 40);
 
         // Render Kotak Dialog Log & Menu Kendali
         g2.setColor(Color.BLACK);

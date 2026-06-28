@@ -155,7 +155,7 @@ public class WorldManager {
         } catch(Exception e) { e.printStackTrace(); }
     }
 
-    public void update() {
+     public void update() {
         if(gp.isMoving) {
             int speed = 4;
             int nextX = gp.playerX, nextY = gp.playerY;
@@ -163,14 +163,36 @@ public class WorldManager {
             if(gp.playerDirection == 1) nextY -= speed;
             if(gp.playerDirection == 2) nextX -= speed;
             if(gp.playerDirection == 3) nextX += speed;
-
-            // Collision check dengan tile solid (2:Water, 3:Tree, 4:Rock, 5:House)
+ 
+            // Collision check 4-corner agar karakter tidak offside saat menginjak tile solid
+            int margin = 4;
+            int playerSize = Game.tileSize - margin * 2;
+            int left = nextX + margin;
+            int right = nextX + playerSize;
+            int top = nextY + margin;
+            int bottom = nextY + playerSize;
+ 
             int tileX = nextX / Game.tileSize;
             int tileY = nextY / Game.tileSize;
+ 
+            boolean blocked = false;
+            int[][] corners = {
+                {left / Game.tileSize, top / Game.tileSize},
+                {right / Game.tileSize, top / Game.tileSize},
+                {left / Game.tileSize, bottom / Game.tileSize},
+                {right / Game.tileSize, bottom / Game.tileSize}
+            };
+            for (int[] corner : corners) {
+                int cx = corner[0], cy = corner[1];
+                if (cy >= 0 && cy < 40 && cx >= 0 && cx < 60) {
+                    int t = mapData[cy][cx];
+                    if (t == 2 || t == 3 || t == 4 || t == 5) { blocked = true; break; }
+                }
+            }
+ 
             if (tileY >= 0 && tileY < 40 && tileX >= 0 && tileX < 60) {
                 int tileSign = mapData[tileY][tileX];
-                // ID 7 (Pokemon Centre) tidak dibuat solid agar player bisa menginjaknya/menyentuhnya
-                if(tileSign != 2 && tileSign != 3 && tileSign != 4 && tileSign != 5) {
+                if (!blocked) {
                     gp.playerX = nextX; gp.playerY = nextY;
                     // Cek Trigger ketika menginjak Tile ID 7 (Pokemon Centre)
                     if(tileSign == 7) {
@@ -217,10 +239,10 @@ public class WorldManager {
                     break;
                 }
             }
-
+ 
             // ── Cek Chest Collision ──
             checkChestCollision(tileX, tileY);
-
+ 
             animTimer++;
             if(animTimer > 10) { animFrame = (animFrame + 1) % 4; animTimer = 0; }
         } else { animFrame = 0; }

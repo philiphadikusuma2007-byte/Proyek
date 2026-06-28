@@ -6,7 +6,7 @@ import Model.ElementsFile.*;
 public class Pyropup extends Monsters {
 
     public Pyropup() {
-        super("Pyroup", new Fire(), Rarity.Common, 75, 18, 10, 12 );
+        super("Pyropup", new Fire(), Rarity.Common, 75, 18, 10, 12 );
     }
 
     @Override
