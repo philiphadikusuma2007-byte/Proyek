@@ -69,6 +69,23 @@ public class AssetGenerator {
         // Daftarkan & Buat Database Gambar 20 Monsters Berbeda
         initMonstersDatabase();
         for(Monsters m : allMonsters) {
+            String path = "assets/monsters/" + m.getName().toLowerCase() + ".png";
+            File imgFile = new File(path);
+
+            if (imgFile.exists()) {
+                // Kalau gambar custom kamu sudah ada di folder, pakai itu, jangan generate ulang
+                try {
+                    BufferedImage customImg = ImageIO.read(imgFile);
+                    if (customImg != null) {
+                        imgCache.put(m.getName(), customImg);
+                        continue;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // Kalau belum ada gambar custom, baru buat placeholder
             BufferedImage mImg = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
             Graphics2D mg = mImg.createGraphics();
             mg.setColor(m.getRarity().getColor());
@@ -77,8 +94,7 @@ public class AssetGenerator {
             mg.setFont(new Font("Arial", Font.BOLD, 10));
             mg.drawString(m.getName().substring(0, Math.min(m.getName().length(), 5)), 12, 36);
             mg.dispose();
-            
-            String path = "assets/monsters/" + m.getName().toLowerCase() + ".png";
+
             saveImage(path, mImg);
             imgCache.put(m.getName(), mImg);
         }
