@@ -1,20 +1,19 @@
 package Game;
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Random;
-import javax.swing.*;
-
 import Model.*;
 import Model.BattleActions.AttackAction;
 import Model.BattleActions.BattleAction;
 import Model.BattleActions.ItemAction;
 import Model.BattleActions.RunAction;
 import Model.BattleActions.SkillAction;
-import UI.GamePanel;
-import UI.Audio.*;
-import Util.AssetGenerator;
 import Model.StatusEffectFile.*;
+import UI.Audio.*;
+import UI.GamePanel;
+import Util.AssetGenerator;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Random;
+import javax.swing.*;
 
 public class Battle {
     GamePanel gp;
@@ -336,6 +335,7 @@ public class Battle {
                 selesai = true;
                 earnedXP = 0;
                 earnedGold = 0;
+                Sound.playSound("assets/sounds/lose.wav");
                 logs.add("💀 Semua Evomon aktifmu pingsan!");
             } else {
                 logs.add("💀 " + playerActive.getName() + " pingsan! Pilih Evomonmu yang lain!");
@@ -346,6 +346,7 @@ public class Battle {
     }
 
     private void endBattleLater() {
+        Sound.playSound("assets/sounds/victory.wav");
         Timer timer = new Timer(2000, e -> {
             BGM.setVolume(-32f);   // kembalikan volume
             gp.currentState = GameState.World;

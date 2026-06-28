@@ -1,15 +1,22 @@
-1276
-100
-1600
+996
+636
+2176
 3
 Potion,POTION,5
-Super Potion,SUPER_POTION,2
+Super Potion,SUPER_POTION,1
 Revive,REVIVE_ITEM,1
 3
-Hutan,false
-Danau,false
+Hutan,true
+Danau,true
 Desa,false
+7
+Leafy,1,80,80,15,12,10,90,100
+Ragnarok,2,260,260,63,40,44,20,150
+Pebblem,1,100,100,12,18,5,30,100
+Droplet,1,90,90,13,15,8,0,100
+Pyroup,1,75,75,18,10,12,0,100
+Seedling,1,110,110,22,19,15,0,100
+Terraking,1,200,200,35,40,18,0,100
+2
 1
-Leafy,1,80,80,15,12,10,0,100
-1
-0
+6
