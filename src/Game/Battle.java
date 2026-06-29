@@ -194,11 +194,14 @@ public class Battle {
     private void drawStatusBar(Graphics2D g2, Monsters m, int x, int y) {
         g2.setColor(Color.WHITE);
         g2.drawString(m.getName() + " Lv." + m.getLevel() + " [" + m.getRarity().name() + "]", x, y);
+        //hp kena damage
         g2.setColor(Color.RED);
         g2.fillRect(x, y+8, 150, 10);
+        //hp tersisa
         g2.setColor(Color.GREEN);
         double hpRatio = (double)m.getHp() / m.getMaxHp();
         g2.fillRect(x, y+8, (int)(150 * hpRatio), 10);
+        //stats hp, maxhp, status
         g2.setColor(Color.WHITE);
         g2.drawRect(x, y+8, 150, 10);
         g2.drawString(m.getHp() + "/" + m.getMaxHp() + " STATUS: " + m.getCurrentStatus().getName(), x, y+32);
@@ -216,6 +219,7 @@ public class Battle {
             }
             return;
         }
+        
         int limit = 1;
         if (subMenu == 0) limit = 4;
         else if (subMenu == 1) limit = playerActive.getSkills().size();
