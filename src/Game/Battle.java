@@ -40,6 +40,22 @@ public class Battle {
             battleBackground = null;
         }
     }
+    
+    public void openSkillMenu() {
+        subMenu = 1;
+        menuIndex = 0;
+    }
+
+    public void openItemMenu() {
+        subMenu = 2;
+        menuIndex = 0;
+    }
+
+    public void runBattle() {
+        logs.add("🏃 Berhasil kabur dari pertarungan!");
+        escaped = true;
+        selesai = true;
+    }
 
     public void startBattle() {
         try {
@@ -84,7 +100,7 @@ public class Battle {
         enemy.setLevel(playerActive.getLevel() + r.nextInt(3) - 1); // Level scaling dinamis
         if(enemy.getLevel() < 1) enemy.setLevel(1);
 
-        logs.add("⚔️ Evomon Liar " + enemy.getName() + " (Lv." + enemy.getName() + ") Muncul!");
+        logs.add("⚔️ Evomon Liar " + enemy.getName() + " (Lv." + enemy.getLevel() + ") Muncul!");
         determineTurnOrder();
         gp.currentState = GameState.Battle;
         } catch (Exception e) {
@@ -219,12 +235,11 @@ public class Battle {
             }
             return;
         }
-        
+
         int limit = 1;
         if (subMenu == 0) limit = 4;
         else if (subMenu == 1) limit = playerActive.getSkills().size();
         else if (subMenu == 2) limit = gp.inventory.isEmpty() ? 1 : gp.inventory.size();
-        else if (subMenu == 3) limit = gp.team.size();
 
         if(code == KeyEvent.VK_W || code == KeyEvent.VK_UP) menuIndex = (menuIndex - 1 + limit) % limit;
         if(code == KeyEvent.VK_S || code == KeyEvent.VK_DOWN) menuIndex = (menuIndex + 1) % limit;
@@ -255,17 +270,6 @@ public class Battle {
                 executeSkillAttack(playerActive.getSkills().get(menuIndex));
             } else if(subMenu == 2) {
                 useBattleItem(gp.inventory.get(menuIndex));
-            } else if(subMenu == 3) {
-                Monsters monsterDipilih = gp.team.get(menuIndex);
-                if(monsterDipilih.getHp() <= 0) {
-                    JOptionPane.showMessageDialog(gp, "❌ Evomon tersebut sudah pingsan! Pilih yang lain.");
-                } else {
-                    playerActive = monsterDipilih;
-                    logs.add("⚔️ Maju, " + playerActive.getName() + "! Balaskan dendam temanmu!");
-                    subMenu = 0;
-                    menuIndex = 0;
-                    executeEnemyTurn();
-                }
             }
         }
     }
@@ -360,9 +364,7 @@ public class Battle {
                 Sound.playSound("assets/sounds/lose.wav");
                 logs.add("💀 Semua Evomon aktifmu pingsan!");
             } else {
-                logs.add("💀 " + playerActive.getName() + " pingsan! Pilih Evomonmu yang lain!");
-                subMenu = 3;
-                menuIndex = 0;
+                
             }
         }
     }
@@ -376,25 +378,5 @@ public class Battle {
 
         timer.setRepeats(false);
         timer.start();
-    }
-
-    public void openSkillMenu() {
-        subMenu = 1;
-        menuIndex = 0;
-    }
-
-    public void openItemMenu() {
-        subMenu = 2;
-        menuIndex = 0;
-    }
-
-    public void runBattle() {
-        logs.add("🏃 Berhasil kabur dari pertarungan!");
-        escaped = true;
-        selesai = true;
-    }
-
-    public void mouseClicked(MouseEvent e){
-
     }
 }
